@@ -272,8 +272,20 @@ class FaceDraw extends CustomPainter {
                     children: [
                       Text('이 검열을 해제하시겠습니까?'),
                       Text('다시 검열하기 위해서는 이미지 편집을 새로 시작하셔야 합니다'),
-                      Text('딜레이가 조금 있습니다',
-                      style: TextStyle(color: Colors.grey, fontSize: 10),)
+                      TextButton(
+                        child: Row(
+                          children: [
+                            Text('자세히 보기',
+                                style: TextStyle(color: Colors.red)),
+                            SizedBox(width: 10,),
+                            Icon(Icons.change_history),
+                          ],
+                        ),
+                        onPressed: () {
+                          print('You clicked' "ID: ${face.trackingId}");
+                          faces.remove(face);
+                          Navigator.of(context).pop();
+                        },)
                     ],
                   ),
                 ),
