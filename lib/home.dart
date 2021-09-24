@@ -1,6 +1,7 @@
 import 'package:data_tective/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'home copy.dart';
 import 'image_pick.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
@@ -130,11 +131,12 @@ class _HomeState extends State<Home> {
       Text('Working on it!!'),
     ];
     return Scaffold(
-      appBar: AppBar(
+      appBar: NewGradientAppBar(
         elevation: 0,
-        backgroundColor: const Color(0xff0063ff),
-        leadingWidth: 600,
-        leading: Padding(
+        gradient: LinearGradient(
+          colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        ),
+        title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [

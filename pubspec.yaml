@@ -37,6 +37,7 @@ dependencies:
   sliding_sheet: ^0.5.0
   snapping_sheet: ^3.1.0
   sliding_up_panel: ^2.0.0+1
+  new_gradient_app_bar: ^0.2.0
 
 
   # The following adds the Cupertino Icons font to your application.
