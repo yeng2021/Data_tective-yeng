@@ -82,7 +82,7 @@ class _BlurState extends State<Blur> {
                 Expanded(
                   child: Slider.adaptive(
                     min: 0,
-                      max: 25,
+                      max: 100,
                       value: _sigma,
                       onChanged:(value) {
                         setState(() {

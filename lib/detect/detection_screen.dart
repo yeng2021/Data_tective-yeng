@@ -12,10 +12,11 @@ import 'sticker_cover.dart';
 
 class DetectionScreen extends StatefulWidget {
   final image;
-  DetectionScreen(this.image);
+  final _sticker;
+  DetectionScreen(this.image, this._sticker);
 
   @override
-  DetectionScreenState createState() => DetectionScreenState(this.image);
+  DetectionScreenState createState() => DetectionScreenState(this.image, this._sticker);
 }
 
 class DetectionScreenState extends State<DetectionScreen> {
@@ -23,7 +24,8 @@ class DetectionScreenState extends State<DetectionScreen> {
   // List<Face> faces;
 
   var image;
-  DetectionScreenState(this.image);
+  var _sticker;
+  DetectionScreenState(this.image, this._sticker);
 
   ui.Image imageSelected;
   List<Face> faces = [];
@@ -128,14 +130,21 @@ class DetectionScreenState extends State<DetectionScreen> {
         actions: [
           TextButton(
               onPressed: () {
-                _sendblurface(context, faces, image, imageSelected);
+                _sticker == '0'
+                ?_sendblurface(context, faces, image, imageSelected)
+                :_sendcoverface(context,faces,image,imageSelected);
               },
-              child: Text('블러', style: TextStyle(color: Colors.white),)),
-          TextButton(
-              onPressed: () {
-                _sendcoverface(context, faces, image, imageSelected);
-              },
-              child: Text('가리기', style: TextStyle(color: Colors.white),)),
+              child: Text('완료', style: TextStyle(color: Colors.white),)),
+          // TextButton(
+          //     onPressed: () {
+          //       _sendblurface(context, faces, image, imageSelected);
+          //     },
+          //     child: Text('블러', style: TextStyle(color: Colors.white),)),
+          // TextButton(
+          //     onPressed: () {
+          //       _sendcoverface(context, faces, image, imageSelected);
+          //     },
+          //     child: Text('가리기', style: TextStyle(color: Colors.white),)),
           TextButton(
               onPressed: () {
                 for(TextBlock block in textBlocks) {

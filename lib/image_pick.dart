@@ -10,116 +10,117 @@ ImagePicker picker = ImagePicker();
 
 enum ImageSourceType { gallery, camera }
 
-class Imagepick extends StatelessWidget {
-
-  void _handleURLButtonPress(BuildContext context, var type) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: const Color(0xff0063ff),
-        leadingWidth: 600,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Image.asset("assets/logo-white.png", width: 50,),
-              SizedBox(width: 10),
-              Image.asset("assets/logo-text-white.png", width: 100)
-            ],
-          ),
-        ),
-      ),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.image),
-                      iconSize: 150,
-                      onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.gallery);
-                      },
-                    ),
-                    Center(
-                      child: Container(
-                        child: Text(
-                          'Gallery',
-                          style: TextStyle(
-                            fontSize: 28.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 80.0),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.photo_camera),
-                      iconSize: 150,
-                      onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.camera);
-                      },
-                    ),
-                    Center(
-                      child: Container(
-                        child: Text(
-                          'Camera',
-                          style: TextStyle(
-                            fontSize: 28.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: ConvexAppBar(
-        top: -25,
-        backgroundColor: const Color(0xff0063ff),
-        // activeColor: const Color(0xffff9d00),
-        style: TabStyle.fixedCircle,
-        elevation: 0,
-        items: [
-          TabItem(icon: Icons.star, title: 'Sticker'),
-          TabItem(icon: Icons.add, title: 'Add'),
-          TabItem(icon: Icons.people, title: 'Profile'),
-        ],
-        initialActiveIndex: 1,//optional, default as 0
-        onTap: (int i) => print('click index=$i'),
-      ),
-    );
-  }
-}
+// class Imagepick extends StatelessWidget {
+//
+//   void _handleURLButtonPress(BuildContext context, var type) {
+//     Navigator.push(context,
+//         MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         elevation: 0,
+//         backgroundColor: const Color(0xff0063ff),
+//         leadingWidth: 600,
+//         leading: Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: Row(
+//             children: [
+//               Image.asset("assets/logo-white.png", width: 50,),
+//               SizedBox(width: 10),
+//               Image.asset("assets/logo-text-white.png", width: 100)
+//             ],
+//           ),
+//         ),
+//       ),
+//       body: Center(
+//         child: Container(
+//           padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             crossAxisAlignment: CrossAxisAlignment.stretch,
+//             children: [
+//               Expanded(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.stretch,
+//                   children: [
+//                     IconButton(
+//                       icon: Icon(Icons.image),
+//                       iconSize: 150,
+//                       onPressed: () {
+//                         _handleURLButtonPress(context, ImageSourceType.gallery);
+//                       },
+//                     ),
+//                     Center(
+//                       child: Container(
+//                         child: Text(
+//                           'Gallery',
+//                           style: TextStyle(
+//                             fontSize: 28.0,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               SizedBox(height: 80.0),
+//               Expanded(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.stretch,
+//                   children: [
+//                     IconButton(
+//                       icon: Icon(Icons.photo_camera),
+//                       iconSize: 150,
+//                       onPressed: () {
+//                         _handleURLButtonPress(context, ImageSourceType.camera);
+//                       },
+//                     ),
+//                     Center(
+//                       child: Container(
+//                         child: Text(
+//                           'Camera',
+//                           style: TextStyle(
+//                             fontSize: 28.0,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//       bottomNavigationBar: ConvexAppBar(
+//         top: -25,
+//         backgroundColor: const Color(0xff0063ff),
+//         // activeColor: const Color(0xffff9d00),
+//         style: TabStyle.fixedCircle,
+//         elevation: 0,
+//         items: [
+//           TabItem(icon: Icons.star, title: 'Sticker'),
+//           TabItem(icon: Icons.add, title: 'Add'),
+//           TabItem(icon: Icons.people, title: 'Profile'),
+//         ],
+//         initialActiveIndex: 1,//optional, default as 0
+//         onTap: (int i) => print('click index=$i'),
+//       ),
+//     );
+//   }
+// }
 
 class ImageFromGalleryEx extends StatefulWidget {
   final type;
-  ImageFromGalleryEx(this.type);
+  final _sticker;
+  ImageFromGalleryEx(this.type, this._sticker);
 
   @override
-  ImageFromGalleryExState createState() => ImageFromGalleryExState(this.type);
+  ImageFromGalleryExState createState() => ImageFromGalleryExState(this.type, this._sticker);
 }
 
 class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
@@ -127,10 +128,12 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   var imagePicker;
   var type;
 
+  var _sticker;
+
   ui.Image imageSelected;
   List<Face> faces = [];
 
-  ImageFromGalleryExState(this.type);
+  ImageFromGalleryExState(this.type, this._sticker);
 
   @override
   void initState() {
@@ -154,7 +157,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
 
   void send(BuildContext context, var file) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => DetectionScreen(file)));
+        MaterialPageRoute(builder: (context) => DetectionScreen(file, _sticker)));
   }
 
   @override

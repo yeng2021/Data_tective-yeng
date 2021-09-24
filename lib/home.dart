@@ -1,7 +1,9 @@
 import 'package:data_tective/settings.dart';
+import 'package:data_tective/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home copy.dart';
 import 'image_pick.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
@@ -19,9 +21,26 @@ class _HomeState extends State<Home> {
 
   int _selectedIndex = 1;
 
+  String _sticker = '0';
+  SharedPreferences _prefs;
+
   void _handleURLButtonPress(BuildContext context, var type) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
+        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type, _sticker)));
+  }
+
+  void initState() {
+    super.initState();  // initState()를 사용할 때 반드시 사용해야 한다.
+    _loadId();  // 이 함수를 실행한다.
+  }
+
+  _loadId() async {
+    _prefs = await SharedPreferences.getInstance(); // 캐시에 저장되어있는 값을 불러온다.
+    setState(() { // 캐시에 저장된 값을 반영하여 현재 상태를 설정한다.
+      // SharedPreferences에 id, pw로 저장된 값을 읽어 필드에 저장. 없을 경우 0으로 대입
+      _sticker = (_prefs.getString('sticker') ?? '0');
+      print(_sticker); // Run 기록으로 id와 pw의 값을 확인할 수 있음.
+    });
   }
 
   @override
@@ -34,29 +53,41 @@ class _HomeState extends State<Home> {
           crossAxisSpacing: 80,
         mainAxisSpacing: 50,
         children: [
-          Column(
-            children: [
-              Image.asset('assets/blur.png',),
-              SizedBox(height: 20,),
-              Text(
-                  'Blur',
-              style: TextStyle(
-                fontSize: 30,
-                fontFamily: 'Staatliches-Regular'
-              ),),
-            ],
-          ),
-          Column(
-            children: [
-              Image.asset('assets/heart.png', fit: BoxFit.scaleDown,),
-              SizedBox(height: 20,),
-              Text(
-                'Heart',
+          TextButton(
+            onPressed: () {
+              _sticker = '0';
+              _prefs.setString('sticker', _sticker);
+            },
+            child: Column(
+              children: [
+                Image.asset('assets/blur.png',),
+                SizedBox(height: 20,),
+                Text(
+                    'Blur',
                 style: TextStyle(
-                    fontSize: 30,
-                    fontFamily: 'Staatliches-Regular'
+                  fontSize: 30,
+                  fontFamily: 'Staatliches-Regular'
                 ),),
-            ],
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              _sticker = '1';
+              _prefs.setString('sticker', _sticker);
+            },
+            child: Column(
+              children: [
+                Expanded(child: Image.asset('assets/heart.png', fit: BoxFit.contain,)),
+                SizedBox(height: 20,),
+                Text(
+                  'Heart',
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontFamily: 'Staatliches-Regular'
+                  ),),
+              ],
+            ),
           ),
           Image.asset('assets/giyu.png'),
           Image.asset('assets/shinobu.png'),
@@ -128,7 +159,10 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      Text('Working on it!!'),
+      TextButton(
+        onPressed: () {},
+        child: Text('Working on it!!'),
+      ),
     ];
     return Scaffold(
       appBar: NewGradientAppBar(
@@ -198,6 +232,9 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: ConvexAppBar(
         top: -25,
         backgroundColor: const Color(0xff0063ff),
+        gradient: LinearGradient(
+            colors: [const Color(0xff7f53ac), const Color(0xff647dee)]
+        ),
         // activeColor: const Color(0xffff9d00),
         style: TabStyle.fixedCircle,
         elevation: 0,
