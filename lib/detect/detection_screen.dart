@@ -3,8 +3,10 @@ import 'dart:ui' as ui show Image;
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:touchable/touchable.dart';
 
+import '../home.dart';
 import 'blur.dart';
 import 'sticker_cover.dart';
 
@@ -26,6 +28,9 @@ class DetectionScreenState extends State<DetectionScreen> {
   ui.Image imageSelected;
   List<Face> faces = [];
   List<TextBlock> textBlocks = [];
+
+  double imageHeight;
+  double imageWidth;
 
   @override
   void initState() {
@@ -107,6 +112,13 @@ class DetectionScreenState extends State<DetectionScreen> {
   //   return intValue;
   // }
 
+  // final PanelController _panelController = PanelController();
+  // bool _visible = false;
+  //
+  // Future<void> hidePanel() {
+  //   _panelController.hide();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,53 +147,63 @@ class DetectionScreenState extends State<DetectionScreen> {
               child: Text('읽기', style: TextStyle(color: Colors.white),))
         ],
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: InteractiveViewer(
-          // constrained: false,
-          // panEnabled: true,
-          // boundaryMargin: EdgeInsets.all(1000),
-          minScale: 0.1,
-          maxScale: 5,
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.8,
           child: FittedBox(
             fit: BoxFit.contain,
-            child:
-            // Image.asset('assets/splash.png')
-            Stack(
-              children: [
-                if (imageSelected != null)
-                  SizedBox(
-                      height: imageSelected.height.toDouble(),
-                      width: imageSelected.width.toDouble(),
-                      child: Icon(
-                        Icons.image,
-                        size: imageSelected.width.toDouble() >= imageSelected.height.toDouble()
-                            ? imageSelected.width.toDouble() :imageSelected.height.toDouble(),
-                        color: Colors.transparent,
-                      )
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child:
-                    Container(
-                      height: imageSelected.height.toDouble(),
-                      width: imageSelected.width.toDouble(),
-                      // child: Image.file(image),
-                      child: CanvasTouchDetector(
-                        builder: (context) => CustomPaint(
-                          painter: FaceDraw(context, faces: faces, image: imageSelected, textBlocks: textBlocks),
-                        ),
-                      ),
-                    ),
-                  )
-              ],
-            ),
+             child:Container(
+               height: imageSelected != null
+                 ?imageSelected.height.toDouble()
+               :300,
+               width: imageSelected != null
+                 ?imageSelected.width.toDouble()
+               :300,
+               // child: Image.file(image),
+               child: CanvasTouchDetector(
+                 builder: (context) => CustomPaint(
+                   painter: FaceDraw(context, faces: faces, image: imageSelected, textBlocks: textBlocks),
+                 ),
+               ),
+             ),
+             // Image.asset('assets/splash.png')
+             // Stack(
+             //   children: [
+             //     if (imageSelected != null)
+             //       SizedBox(
+             //           height: imageSelected.height.toDouble(),
+             //           width: imageSelected.width.toDouble(),
+             //           child: Icon(
+             //             Icons.image,
+             //             size: imageSelected.width.toDouble() >= imageSelected.height.toDouble()
+             //                 ? imageSelected.width.toDouble() :imageSelected.height.toDouble(),
+             //             color: Colors.transparent,
+             //           )
+             //       ),
+             //     Align(
+             //       alignment: Alignment.center,
+             //       child:
+             //       Container(
+             //         height: imageSelected.height.toDouble(),
+             //         width: imageSelected.width.toDouble(),
+             //         // child: Image.file(image),
+             //         child: CanvasTouchDetector(
+             //           builder: (context) => CustomPaint(
+             //             painter: FaceDraw(context, faces: faces, image: imageSelected, textBlocks: textBlocks),
+             //           ),
+             //         ),
+             //       ),
+             //     )
+             //   ],
+             // ),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {faces.clear();},
+        onPressed: () {
+          faces.clear();
+          },
         tooltip: 'Select',
         child: Icon(Icons.image),
       ),
@@ -210,7 +232,54 @@ class FaceDraw extends CustomPainter {
 
     for (TextBlock textBlock in textBlocks) {
 
-      canvas.drawRect(
+      touchyCanvas.drawRect(Rect.fromLTRB(textBlock.rect.left, textBlock.rect.top, textBlock.rect.right, textBlock.rect.bottom), Paint()
+        ..color = Colors.transparent
+          , onTapDown: (_) {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('개인고유식별 번호 유출 위험'),
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: [
+                          Text('이 검열을 해제하시겠습니까?'),
+                          Text('다시 검열하기 위해서는 이미지 편집을 새로 시작하셔야 합니다'),
+                          TextButton(
+                            child: Row(
+                              children: [
+                                Text('자세히 보기',
+                                    style: TextStyle(color: Colors.red)),
+                                Icon(Icons.chevron_right),
+                              ],
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },)
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text('취소'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },),
+                      TextButton(
+                        child: Text('해제',
+                            style: TextStyle(color: Colors.red)),
+                        onPressed: () {
+                          textBlocks.remove(textBlock);
+                          Navigator.of(context).pop();
+                        },)
+                    ],
+                  );
+                }
+            );
+          });
+
+      touchyCanvas.drawRect(
         Rect.fromLTRB(textBlock.rect.left, textBlock.rect.top, textBlock.rect.right, textBlock.rect.bottom),
         // face.boundingBox,
         Paint()
@@ -266,7 +335,7 @@ class FaceDraw extends CustomPainter {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('검열삭제'),
+                title: Text('초상권 침해'),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: [
@@ -277,8 +346,7 @@ class FaceDraw extends CustomPainter {
                           children: [
                             Text('자세히 보기',
                                 style: TextStyle(color: Colors.red)),
-                            SizedBox(width: 10,),
-                            Icon(Icons.change_history),
+                            Icon(Icons.chevron_right),
                           ],
                         ),
                         onPressed: () {

@@ -160,11 +160,14 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //     title: Text(type == ImageSourceType.camera
-      //         ? "Image from Camera"
-      //         : "Image from Gallery"),
-      // ),
+      appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {print(type);},
+                icon: Icon(Icons.print)
+            )
+          ],
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
         child: Column(
