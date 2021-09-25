@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui show Image;
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class Blur extends StatefulWidget {
   final faces;
@@ -16,20 +17,32 @@ class _BlurState extends State<Blur> {
   List<Face> faces;
   final images;
   ui.Image imageSelected;
-  double _sigma = 3;
+  double _sigma = 15;
 
   _BlurState(this.faces, this.images, this.imageSelected);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: NewGradientAppBar(
         elevation: 0,
-        backgroundColor: const Color(0xff0063ff),
+        gradient: LinearGradient(
+            colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        ),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Image.asset("assets/logo-white.png", width: 50,),
+              SizedBox(width: 10),
+              Image.asset("assets/logo-text-white.png", width: 100)
+            ],
+          ),
+        ),
         actions: [
           TextButton(onPressed: () {},
               child: Text(
-                  '완료',
+                '완료',
                 style: TextStyle(color: Colors.white),
               ))
         ],

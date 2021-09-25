@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:ui' as ui show Image;
 
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+
 ImagePicker picker = ImagePicker();
 
 enum ImageSourceType { gallery, camera }
@@ -143,11 +145,13 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   }
 
   void openImagePicker() async {
-    var source = type == ImageSourceType.camera
-        ? ImageSource.camera
-        : ImageSource.gallery;
+    // var source = type == ImageSourceType.camera
+    //     ? ImageSource.camera
+    //     : ImageSource.gallery;
     XFile image = await imagePicker.pickImage(
-        source: source,
+        source: type.toString() == 'ImageSourceType.camera'
+        ? ImageSource.camera
+        : ImageSource.gallery,
         imageQuality: 50,
         preferredCameraDevice: CameraDevice.front);
     setState(() {
@@ -163,13 +167,31 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          actions: [
-            IconButton(
-                onPressed: () {print(type);},
-                icon: Icon(Icons.print)
-            )
-          ],
+      appBar: NewGradientAppBar(
+        elevation: 0,
+        gradient: LinearGradient(
+            colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        ),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Image.asset("assets/logo-white.png", width: 50,),
+              SizedBox(width: 10),
+              Image.asset("assets/logo-text-white.png", width: 100)
+            ],
+          ),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                send(context, _image);
+                },
+              icon: Icon(Icons.arrow_forward_ios)),
+          IconButton(
+              onPressed: () {print(type);},
+              icon: Icon(Icons.print))
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
@@ -185,47 +207,27 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                 child: Expanded(
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.7,
+                    height: MediaQuery.of(context).size.height*0.7,
                     // decoration: BoxDecoration(
                     //     color: Colors.red[200]),
                     child: _image != null
-                        ? Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: FittedBox(
-                              child: Image.file(
-                                _image,
-                                width: 200.0,
-                                height: 200.0,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
+                        ? Expanded(
+                          child: Image.file(
+                            _image,
+                            width: 200.0,
+                            height: 200.0,
+                            fit: BoxFit.contain,
                           ),
-                          SizedBox(height: 30.0),
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              send(context, _image);
-                            },
-                            icon: Icon(
-                              Icons.check,
-                              size: 30,
-                              color: Colors.green,
-                            ),
-                            label: Text(
-                              '선택',
-                              style: TextStyle(fontSize: 20.0),),
-                          ),
-                        ],
-                      ),
-                    )
+                        )
                         : Container(
                       // decoration: BoxDecoration(
                       //     color: Colors.cyan),
                       // width: 200,
                       // height: 200,
                       child: Icon(
-                        Icons.camera_alt,
+                        type.toString() == 'ImageSourceType.camera'
+                        ? Icons.camera_alt
+                        : Icons.image,
                         size: 150,
                         color: Colors.grey[800],
                       ),

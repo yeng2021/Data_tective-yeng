@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'dart:ui' as ui show Image;
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:touchable/touchable.dart';
@@ -100,10 +101,10 @@ class DetectionScreenState extends State<DetectionScreen> {
     );
   }
 
-  void _sendcoverface(context, var faces, var images, var imageSelected) {
+  void _sendcoverface(context, var faces, var images, var imageSelected, var _sticker) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ImageCover(faces, images, imageSelected)),
+      MaterialPageRoute(builder: (context) => ImageCover(faces, images, imageSelected, _sticker)),
     );
   }
 
@@ -124,27 +125,29 @@ class DetectionScreenState extends State<DetectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: NewGradientAppBar(
         elevation: 0,
-        backgroundColor: const Color(0xff0063ff),
+        gradient: LinearGradient(
+            colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        ),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Image.asset("assets/logo-white.png", width: 50,),
+              SizedBox(width: 10),
+              Image.asset("assets/logo-text-white.png", width: 100)
+            ],
+          ),
+        ),
         actions: [
           TextButton(
               onPressed: () {
-                _sticker == '0'
-                ?_sendblurface(context, faces, image, imageSelected)
-                :_sendcoverface(context,faces,image,imageSelected);
+                _sticker == 1
+                    ?_sendblurface(context, faces, image, imageSelected)
+                    :_sendcoverface(context,faces,image,imageSelected, _sticker);
               },
               child: Text('완료', style: TextStyle(color: Colors.white),)),
-          // TextButton(
-          //     onPressed: () {
-          //       _sendblurface(context, faces, image, imageSelected);
-          //     },
-          //     child: Text('블러', style: TextStyle(color: Colors.white),)),
-          // TextButton(
-          //     onPressed: () {
-          //       _sendcoverface(context, faces, image, imageSelected);
-          //     },
-          //     child: Text('가리기', style: TextStyle(color: Colors.white),)),
           TextButton(
               onPressed: () {
                 for(TextBlock block in textBlocks) {

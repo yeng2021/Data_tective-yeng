@@ -38,6 +38,7 @@ dependencies:
   snapping_sheet: ^3.1.0
   sliding_up_panel: ^2.0.0+1
   new_gradient_app_bar: ^0.2.0
+  path_provider: ^2.0.5
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -76,8 +77,8 @@ flutter:
     - assets/splash.png
     - assets/giyu.png
     - assets/shinobu.png
-    - assets/blur.png
-    - assets/heart.png
+    - assets/sticker1.png
+    - assets/sticker2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

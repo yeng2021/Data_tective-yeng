@@ -1,10 +1,7 @@
-import 'package:data_tective/settings.dart';
-import 'package:data_tective/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'home copy.dart';
 import 'image_pick.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
@@ -21,10 +18,10 @@ class _HomeState extends State<Home> {
 
   int _selectedIndex = 1;
 
-  String _sticker = '0';
+  int _sticker = 0;
   SharedPreferences _prefs;
 
-  void _handleURLButtonPress(BuildContext context, var type) {
+  void _handleURLButtonPress(BuildContext context, var type, _sticker) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type, _sticker)));
   }
@@ -38,63 +35,93 @@ class _HomeState extends State<Home> {
     _prefs = await SharedPreferences.getInstance(); // 캐시에 저장되어있는 값을 불러온다.
     setState(() { // 캐시에 저장된 값을 반영하여 현재 상태를 설정한다.
       // SharedPreferences에 id, pw로 저장된 값을 읽어 필드에 저장. 없을 경우 0으로 대입
-      _sticker = (_prefs.getString('sticker') ?? '0');
+      _sticker = (_prefs.getInt('sticker') ?? 0);
       print(_sticker); // Run 기록으로 id와 pw의 값을 확인할 수 있음.
     });
   }
 
+  void checkOption(int index) {
+    setState(() {
+      _sticker = index;
+      _prefs.setInt('sticker', _sticker);
+    });
+  }
+
+  static const List<Map<String, dynamic>> stickers = <Map<String, dynamic>>[
+    <String, dynamic>{
+      'name': 'blur',
+      'img': 'assets/sticker1.png',
+    },
+    <String, dynamic>{
+      'name': 'heart',
+      'img': 'assets/sticker2.png',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     List _widgetOptions = [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-        child: GridView.count(
-            crossAxisCount: 2,
-          crossAxisSpacing: 80,
-        mainAxisSpacing: 50,
+      GridView.count(
+        crossAxisCount: 2,
         children: [
-          TextButton(
-            onPressed: () {
-              _sticker = '0';
-              _prefs.setString('sticker', _sticker);
-            },
-            child: Column(
-              children: [
-                Image.asset('assets/blur.png',),
-                SizedBox(height: 20,),
-                Text(
-                    'Blur',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontFamily: 'Staatliches-Regular'
-                ),),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              _sticker = '1';
-              _prefs.setString('sticker', _sticker);
-            },
-            child: Column(
-              children: [
-                Expanded(child: Image.asset('assets/heart.png', fit: BoxFit.contain,)),
-                SizedBox(height: 20,),
-                Text(
-                  'Heart',
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontFamily: 'Staatliches-Regular'
-                  ),),
-              ],
-            ),
-          ),
-          Image.asset('assets/giyu.png'),
-          Image.asset('assets/shinobu.png'),
-          Image.asset('assets/logo-text.png'),
-          Image.asset('assets/splash.png'),
-        ],),
+          for (int i = 0; i < stickers.length; i++)
+            StickerOption(
+              stickers[i]['name'] as String,
+              img: stickers[i]['img'] as String,
+              onTap: () => checkOption(i + 1),
+              selected: i + 1 == _sticker,
+            )
+        ],
       ),
+      // Padding(
+      //   padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+      //   child: GridView.count(
+      //       crossAxisCount: 2,
+      //     crossAxisSpacing: 80,
+      //   mainAxisSpacing: 50,
+      //   children: [
+      //     TextButton(
+      //       onPressed: () {
+      //         _sticker = 0;
+      //         _prefs.setInt('sticker', _sticker);
+      //       },
+      //       child: Column(
+      //         children: [
+      //           Image.asset('assets/blur.png',),
+      //           SizedBox(height: 20,),
+      //           Text(
+      //               'Blur',
+      //           style: TextStyle(
+      //             fontSize: 30,
+      //             fontFamily: 'Staatliches-Regular'
+      //           ),),
+      //         ],
+      //       ),
+      //     ),
+      //     TextButton(
+      //       onPressed: () {
+      //         _sticker = 1;
+      //         _prefs.setInt('sticker', _sticker);
+      //       },
+      //       child: Column(
+      //         children: [
+      //           Expanded(child: Image.asset('assets/sticker1.png', fit: BoxFit.contain,)),
+      //           SizedBox(height: 20,),
+      //           Text(
+      //             'Heart',
+      //             style: TextStyle(
+      //                 fontSize: 30,
+      //                 fontFamily: 'Staatliches-Regular'
+      //             ),),
+      //         ],
+      //       ),
+      //     ),
+      //     Image.asset('assets/giyu.png'),
+      //     Image.asset('assets/shinobu.png'),
+      //     Image.asset('assets/logo-text.png'),
+      //     Image.asset('assets/splash.png'),
+      //   ],),
+      // ),
       Center(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
@@ -111,7 +138,7 @@ class _HomeState extends State<Home> {
                       icon: Icon(Icons.image),
                       iconSize: 150,
                       onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.gallery);
+                        _handleURLButtonPress(context, ImageSourceType.gallery, _sticker);
                       },
                     ),
                     Center(
@@ -138,7 +165,7 @@ class _HomeState extends State<Home> {
                       icon: Icon(Icons.photo_camera),
                       iconSize: 150,
                       onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.camera);
+                        _handleURLButtonPress(context, ImageSourceType.camera, _sticker);
                       },
                     ),
                     Center(
@@ -193,7 +220,7 @@ class _HomeState extends State<Home> {
                       child: ListBody(
                         children: [
                           Text('사진을 검열할 방법을 설정할 수 있습니다.'),
-                          Text('블러, 스티커를 활용하여 여러가지 방법으로 사진을 검열해보세요'),
+                          Text('블러, 스티커를 활용하여 여러가지 방법으로 사진을 검열해보세요.'),
                         ],
                       ),
                     ),
@@ -204,7 +231,8 @@ class _HomeState extends State<Home> {
                       content: SingleChildScrollView(
                         child: ListBody(
                           children: [
-                            Text('갤러리에서 이미지를 불러오거나 카메라를 사용해 직접 사진을 찍을 수 있습니다'),
+                            Text('갤러리에서 이미지를 불러오거나 카메라를 사용해 직접 사진을 찍을 수 있습니다.'),
+                            Text('업로드 된 사진은 AI 탐정이 직접 검열해 준답니다.'),
                           ],
                         ),
                       ),
@@ -215,7 +243,7 @@ class _HomeState extends State<Home> {
                       content: SingleChildScrollView(
                         child: ListBody(
                           children: [
-                            Text('이 앱은 어쩌구 저쩌구'),
+                            Text('이 앱에 대한 설명입니다.'),
                           ],
                         ),
                       ),
@@ -231,9 +259,9 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: ConvexAppBar(
         top: -25,
-        backgroundColor: const Color(0xff0063ff),
+        backgroundColor: const Color(0xff7f53ac),
         gradient: LinearGradient(
-            colors: [const Color(0xff7f53ac), const Color(0xff647dee)]
+            colors: [const Color(0xff7f53ac), const Color(0xff647dee), const Color(0xff7f53ac),]
         ),
         // activeColor: const Color(0xffff9d00),
         style: TabStyle.fixedCircle,
@@ -254,3 +282,65 @@ class _HomeState extends State<Home> {
   }
 }
 
+class StickerOption extends StatelessWidget {
+
+  const StickerOption(
+      this.title, {
+        Key key,
+        this.img,
+        this.onTap,
+        this.selected,
+      }) : super(key: key);
+
+  final String title;
+  final String img;
+  final VoidCallback onTap;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink.image(
+      fit: BoxFit.contain,
+      image: AssetImage(img),
+      child: InkWell(
+        onTap: onTap,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: selected ?? false ? const Color(0xff647dee) : Colors.transparent,
+                  width: selected ?? false ? 10 : 0,
+                )
+              )
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: selected ?? false
+                      ? const Color(0xff7f53ac)
+                      : Colors.black54,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  title ?? '',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontFamily: 'Staatliches-Regular'
+                  ),
+                ),
+              )
+            ],),
+          ),
+        ),
+      ),
+    );
+  }
+}
