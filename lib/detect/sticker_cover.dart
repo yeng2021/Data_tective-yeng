@@ -52,7 +52,7 @@ class _ImageCoverState extends State<ImageCover> {
   }
 
   void bringSticker() async {
-    _image = await getImageFileFromAssets('sticker$_sticker.png');
+    _image = await getImageFileFromAssets('sticker'+_sticker.toString()+'.png');
   }
 
   void getImage() async {
@@ -69,7 +69,7 @@ class _ImageCoverState extends State<ImageCover> {
     ui.Image imageFile2 = await decodeImageFromList(imageFile);
 
     setState(() {
-      _image = Image.asset('assets/sticker'+_sticker+'.png');
+      _image = Image.asset('assets/sticker'+_sticker.toString()+'.png');
       coverimage = imageFile2;
     });
   }
@@ -121,9 +121,9 @@ class FaceDraw extends CustomPainter {
   List<Face> faces;
   ui.Image image;
   final BuildContext context;
-  ui.Image coverimage;
+  ui.Image coverImage;
 
-  FaceDraw(this.context, this.faces, this.image, this.coverimage);
+  FaceDraw(this.context, this.faces, this.image, this.coverImage);
 
   @override
 
@@ -139,8 +139,8 @@ class FaceDraw extends CustomPainter {
     for (Face face in faces) {
 
       canvas.drawImageRect(
-          coverimage,
-          Offset.zero & Size(coverimage.width.toDouble(), coverimage.height.toDouble()),
+          coverImage,
+          Offset.zero & Size(coverImage.width.toDouble(), coverImage.height.toDouble()),
           Offset(face.boundingBox.left, face.boundingBox.top) & Size(face.boundingBox.width, face.boundingBox.height),
           Paint());
 
