@@ -126,8 +126,8 @@ class ImageFromGalleryEx extends StatefulWidget {
 }
 
 class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
-  var _image;
-  var imagePicker;
+  File _image;
+  ImagePicker imagePicker;
   var type;
 
   var _sticker;
@@ -145,11 +145,8 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   }
 
   void openImagePicker() async {
-    // var source = type == ImageSourceType.camera
-    //     ? ImageSource.camera
-    //     : ImageSource.gallery;
     XFile image = await imagePicker.pickImage(
-        source: type.toString() == 'ImageSourceType.camera'
+        source: type.index == ImageSourceType.camera
         ? ImageSource.camera
         : ImageSource.gallery,
         imageQuality: 50,
@@ -217,7 +214,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                           ),
                         )
                         : Icon(
-                          type.toString() == 'ImageSourceType.camera'
+                          type.index == ImageSourceType.camera
                           ? Icons.camera_alt
                           : Icons.image,
                           size: 150,
