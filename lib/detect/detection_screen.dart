@@ -13,20 +13,20 @@ import 'sticker_cover.dart';
 
 class DetectionScreen extends StatefulWidget {
   final image;   // TODO: type 정의 필요
-  final _sticker;  // TODO: type 정의 필요
-  DetectionScreen(this.image, this._sticker);
+  final int _stickerId;
+  DetectionScreen(this.image, this._stickerId);
 
   @override
-  DetectionScreenState createState() => DetectionScreenState(image, _sticker);
+  _DetectionScreenState createState() => _DetectionScreenState(image, _stickerId);
 }
 
-class DetectionScreenState extends State<DetectionScreen> {
+class _DetectionScreenState extends State<DetectionScreen> {
   // ui.Image imageSelected;
   // List<Face> faces;
 
   var image;  // TODO: type 정의 필요
-  var _sticker;  // TODO: type 정의 필요
-  DetectionScreenState(this.image, this._sticker);
+  int _stickerId;
+  _DetectionScreenState(this.image, this._stickerId);
 
   ui.Image imageSelected;
   List<Face> faces = [];
@@ -101,10 +101,10 @@ class DetectionScreenState extends State<DetectionScreen> {
     );
   }
 
-  void _sendCoverFace(context, var faces, var images, var imageSelected, var _sticker) {
+  void _sendCoverFace(context, var faces, var images, var imageSelected, var _stickerId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ImageCover(faces, images, imageSelected, _sticker)),
+      MaterialPageRoute(builder: (context) => ImageCover(faces, images, imageSelected, _stickerId)),
     );
   }
 
@@ -143,9 +143,9 @@ class DetectionScreenState extends State<DetectionScreen> {
         actions: [
           TextButton(
               onPressed: () {
-                _sticker == 1
+                _stickerId == 1
                     ?_sendBlurFace(context, faces, image, imageSelected)
-                    :_sendCoverFace(context,faces,image,imageSelected, _sticker);
+                    :_sendCoverFace(context,faces,image,imageSelected, _stickerId);
               },
               child: const Text('완료', style: TextStyle(color: Colors.white),)),
           TextButton(

@@ -20,12 +20,12 @@ class _HomeState extends State<Home> {
 
   int _selectedIndex = 1;
 
-  int _sticker = 0;
+  int _stickerId = 0;
   SharedPreferences _prefs;
 
-  void _handleURLButtonPress(BuildContext context, var type, _sticker) {
+  void _handleURLButtonPress(BuildContext context, ImageSourceType sourceType, _stickerId) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type, _sticker)));
+        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(sourceType, _stickerId)));
   }
 
   @override
@@ -38,15 +38,15 @@ class _HomeState extends State<Home> {
     _prefs = await SharedPreferences.getInstance(); // 캐시에 저장되어있는 값을 불러온다.
     setState(() { // 캐시에 저장된 값을 반영하여 현재 상태를 설정한다.
       // SharedPreferences 에 id, pw로 저장된 값을 읽어 필드에 저장. 없을 경우 0으로 대입
-      _sticker = (_prefs.getInt('sticker') ?? 0);
-      print(_sticker); // Run 기록으로 id와 pw의 값을 확인할 수 있음.
+      _stickerId = (_prefs.getInt('sticker') ?? 0);
+      print(_stickerId); // Run 기록으로 id와 pw의 값을 확인할 수 있음.
     });
   }
 
   void checkOption(int index) {
     setState(() {
-      _sticker = index;
-      _prefs.setInt('sticker', _sticker);
+      _stickerId = index;
+      _prefs.setInt('sticker', _stickerId);
     });
   }
 
@@ -72,7 +72,7 @@ class _HomeState extends State<Home> {
               stickers[i]['name'] as String,
               img: stickers[i]['img'] as String,
               onTap: () => checkOption(i + 1),
-              selected: i + 1 == _sticker,
+              selected: i + 1 == _stickerId,
             )
         ],
       ),
@@ -92,7 +92,7 @@ class _HomeState extends State<Home> {
                       icon: const Icon(Icons.image),
                       iconSize: 150,
                       onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.gallery, _sticker);
+                        _handleURLButtonPress(context, ImageSourceType.gallery, _stickerId);
                       },
                     ),
                     const Center(
@@ -117,7 +117,7 @@ class _HomeState extends State<Home> {
                       icon: const Icon(Icons.photo_camera),
                       iconSize: 150,
                       onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.camera, _sticker);
+                        _handleURLButtonPress(context, ImageSourceType.camera, _stickerId);
                       },
                     ),
                     const Center(

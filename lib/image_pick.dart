@@ -117,25 +117,24 @@ enum ImageSourceType { gallery, camera }
 // }
 
 class ImageFromGalleryEx extends StatefulWidget {
-  final type;
-  final _sticker;
-  ImageFromGalleryEx(this.type, this._sticker);
+  final sourceType;   // ImageSourceType type 설정하면 error 나는데, 잘 모르겠음;;
+  final int _stickerId;
+  ImageFromGalleryEx(this.sourceType, this._stickerId);
 
   @override
-  ImageFromGalleryExState createState() => ImageFromGalleryExState(this.type, this._sticker);
+  ImageFromGalleryExState createState() => ImageFromGalleryExState(sourceType, _stickerId);
 }
 
 class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   File _image;
   ImagePicker imagePicker;
-  var type;
-
-  var _sticker;
+  var sourceType;  // ImageSourceType type 으로 설정하면 error 발생;;
+  int _stickerId;
 
   ui.Image imageSelected;
   List<Face> faces = [];
 
-  ImageFromGalleryExState(this.type, this._sticker);
+  ImageFromGalleryExState(this.sourceType, this._stickerId);
 
   @override
   void initState() {
@@ -146,7 +145,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
 
   void openImagePicker() async {
     XFile image = await imagePicker.pickImage(
-        source: type.index == ImageSourceType.camera
+        source: sourceType.index == ImageSourceType.camera.index
         ? ImageSource.camera
         : ImageSource.gallery,
         imageQuality: 50,
@@ -158,7 +157,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
 
   void send(BuildContext context, var file) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => DetectionScreen(file, _sticker)));
+        MaterialPageRoute(builder: (context) => DetectionScreen(file, _stickerId)));
   }
 
   @override
@@ -213,8 +212,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                             fit: BoxFit.contain,
                           ),
                         )
-                        : Icon(
-                          type.index == ImageSourceType.camera
+                        : Icon(sourceType.index == ImageSourceType.camera.index
                           ? Icons.camera_alt
                           : Icons.image,
                           size: 150,

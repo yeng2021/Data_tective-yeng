@@ -17,11 +17,11 @@ class ImageCover extends StatefulWidget {
   final List<Face> faces;
   final images;  // TODO: 안 쓰면 삭제 필요
   final ui.Image imageSelected;
-  final _sticker;  // TODO: type 정의 필요
-  ImageCover(this.faces, this.images, this.imageSelected, this._sticker);
+  final _stickerId;  // TODO: type 정의 필요
+  ImageCover(this.faces, this.images, this.imageSelected, this._stickerId);
 
   @override
-  _ImageCoverState createState() => _ImageCoverState(faces, images, imageSelected, _sticker);
+  _ImageCoverState createState() => _ImageCoverState(faces, images, imageSelected, _stickerId);
 }
 
 class _ImageCoverState extends State<ImageCover> {
@@ -30,9 +30,9 @@ class _ImageCoverState extends State<ImageCover> {
   ui.Image imageSelected;
   var _image;
   ui.Image coverimage;
-  var _sticker;
+  var _stickerId;
 
-  _ImageCoverState(this.faces, this.images, this.imageSelected, this._sticker);
+  _ImageCoverState(this.faces, this.images, this.imageSelected, this._stickerId);
 
 
 
@@ -52,7 +52,7 @@ class _ImageCoverState extends State<ImageCover> {
   }
 
   void bringSticker() async {
-    _image = await getImageFileFromAssets('sticker'+_sticker.toString()+'.png');
+    _image = await getImageFileFromAssets('sticker'+_stickerId.toString()+'.png');
   }
 
   void getImage() async {
@@ -69,7 +69,7 @@ class _ImageCoverState extends State<ImageCover> {
     ui.Image imageFile2 = await decodeImageFromList(imageFile);
 
     setState(() {
-      _image = Image.asset('assets/sticker'+_sticker.toString()+'.png');
+      _image = Image.asset('assets/sticker'+_stickerId.toString()+'.png');
       coverimage = imageFile2;
     });
   }
