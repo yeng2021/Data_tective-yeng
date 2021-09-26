@@ -12,20 +12,20 @@ import 'blur.dart';
 import 'sticker_cover.dart';
 
 class DetectionScreen extends StatefulWidget {
-  final image;
-  final _sticker;
+  final image;   // TODO: type 정의 필요
+  final _sticker;  // TODO: type 정의 필요
   DetectionScreen(this.image, this._sticker);
 
   @override
-  DetectionScreenState createState() => DetectionScreenState(this.image, this._sticker);
+  DetectionScreenState createState() => DetectionScreenState(image, _sticker);
 }
 
 class DetectionScreenState extends State<DetectionScreen> {
   // ui.Image imageSelected;
   // List<Face> faces;
 
-  var image;
-  var _sticker;
+  var image;  // TODO: type 정의 필요
+  var _sticker;  // TODO: type 정의 필요
   DetectionScreenState(this.image, this._sticker);
 
   ui.Image imageSelected;
@@ -46,7 +46,7 @@ class DetectionScreenState extends State<DetectionScreen> {
     ui.Image imageFile2 = await decodeImageFromList(imageFile);
 
     final InputImage inputImage = InputImage.fromFilePath(image.path);
-    final FaceDetector faceDetector = GoogleMlKit.vision.faceDetector(FaceDetectorOptions(
+    final FaceDetector faceDetector = GoogleMlKit.vision.faceDetector(const FaceDetectorOptions(
       enableClassification: true,
       enableTracking: true,
     ));
@@ -94,14 +94,14 @@ class DetectionScreenState extends State<DetectionScreen> {
   //   });
   // }
 
-  void _sendblurface(context, var faces, var images, var imageSelected) {
+  void _sendBlurFace(context, var faces, var images, var imageSelected) {
     Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => Blur(faces, images, imageSelected)),
     );
   }
 
-  void _sendcoverface(context, var faces, var images, var imageSelected, var _sticker) {
+  void _sendCoverFace(context, var faces, var images, var imageSelected, var _sticker) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ImageCover(faces, images, imageSelected, _sticker)),
@@ -127,15 +127,15 @@ class DetectionScreenState extends State<DetectionScreen> {
     return Scaffold(
       appBar: NewGradientAppBar(
         elevation: 0,
-        gradient: LinearGradient(
-            colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        gradient: const LinearGradient(
+            colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Image.asset("assets/logo-white.png", width: 50,),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Image.asset("assets/logo-text-white.png", width: 100)
             ],
           ),
@@ -144,10 +144,10 @@ class DetectionScreenState extends State<DetectionScreen> {
           TextButton(
               onPressed: () {
                 _sticker == 1
-                    ?_sendblurface(context, faces, image, imageSelected)
-                    :_sendcoverface(context,faces,image,imageSelected, _sticker);
+                    ?_sendBlurFace(context, faces, image, imageSelected)
+                    :_sendCoverFace(context,faces,image,imageSelected, _sticker);
               },
-              child: Text('완료', style: TextStyle(color: Colors.white),)),
+              child: const Text('완료', style: TextStyle(color: Colors.white),)),
           TextButton(
               onPressed: () {
                 for(TextBlock block in textBlocks) {
@@ -156,16 +156,16 @@ class DetectionScreenState extends State<DetectionScreen> {
                   }
                 }
               },
-              child: Text('읽기', style: TextStyle(color: Colors.white),))
+              child: const Text('읽기', style: TextStyle(color: Colors.white),))
         ],
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.8,
           child: FittedBox(
             fit: BoxFit.contain,
-             child:Container(
+             child: SizedBox(
                height: imageSelected != null
                  ?imageSelected.height.toDouble()
                :300,
@@ -217,7 +217,7 @@ class DetectionScreenState extends State<DetectionScreen> {
           faces.clear();
           },
         tooltip: 'Select',
-        child: Icon(Icons.image),
+        child: const Icon(Icons.image),
       ),
     );
   }
@@ -252,15 +252,15 @@ class FaceDraw extends CustomPainter {
                 barrierDismissible: false,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('개인고유식별 번호 유출 위험'),
+                    title: const Text('개인고유식별 번호 유출 위험'),
                     content: SingleChildScrollView(
                       child: ListBody(
                         children: [
-                          Text('이 검열을 해제하시겠습니까?'),
-                          Text('다시 검열하기 위해서는 이미지 편집을 새로 시작하셔야 합니다'),
+                          const Text('이 검열을 해제하시겠습니까?'),
+                          const Text('다시 검열하기 위해서는 이미지 편집을 새로 시작하셔야 합니다'),
                           TextButton(
                             child: Row(
-                              children: [
+                              children: const [
                                 Text('자세히 보기',
                                     style: TextStyle(color: Colors.red)),
                                 Icon(Icons.chevron_right),
@@ -274,12 +274,12 @@ class FaceDraw extends CustomPainter {
                     ),
                     actions: [
                       TextButton(
-                        child: Text('취소'),
+                        child: const Text('취소'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },),
                       TextButton(
-                        child: Text('해제',
+                        child: const Text('해제',
                             style: TextStyle(color: Colors.red)),
                         onPressed: () {
                           textBlocks.remove(textBlock);
@@ -309,9 +309,9 @@ class FaceDraw extends CustomPainter {
           ..style = PaintingStyle.fill,);
 
 
-      TextPainter paintSpanId = new TextPainter(
-        text: TextSpan(
-          style: new TextStyle(
+      TextPainter paintSpanId = TextPainter(
+        text: const TextSpan(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w400,
@@ -323,7 +323,7 @@ class FaceDraw extends CustomPainter {
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, new Offset(textBlock.rect.left + 10, textBlock.rect.top - 20));
+      paintSpanId.paint(canvas, Offset(textBlock.rect.left + 10, textBlock.rect.top - 20));
 
     }
 
@@ -347,15 +347,15 @@ class FaceDraw extends CustomPainter {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('초상권 침해'),
+                title: const Text('초상권 침해'),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: [
-                      Text('이 검열을 해제하시겠습니까?'),
-                      Text('다시 검열하기 위해서는 이미지 편집을 새로 시작하셔야 합니다'),
+                      const Text('이 검열을 해제하시겠습니까?'),
+                      const Text('다시 검열하기 위해서는 이미지 편집을 새로 시작하셔야 합니다'),
                       TextButton(
                         child: Row(
-                          children: [
+                          children: const [
                             Text('자세히 보기',
                                 style: TextStyle(color: Colors.red)),
                             Icon(Icons.chevron_right),
@@ -371,12 +371,12 @@ class FaceDraw extends CustomPainter {
                 ),
                 actions: [
                   TextButton(
-                    child: Text('취소'),
+                    child: const Text('취소'),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },),
                   TextButton(
-                    child: Text('해제',
+                    child: const Text('해제',
                     style: TextStyle(color: Colors.red)),
                     onPressed: () {
                       print('You clicked' "ID: ${face.trackingId}");
@@ -408,9 +408,9 @@ class FaceDraw extends CustomPainter {
                   ..style = PaintingStyle.fill,);
 
 
-      TextPainter paintSpanId = new TextPainter(
-        text: TextSpan(
-          style: new TextStyle(
+      TextPainter paintSpanId = TextPainter(
+        text: const TextSpan(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w400,
@@ -422,7 +422,7 @@ class FaceDraw extends CustomPainter {
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, new Offset(face.boundingBox.left + 10, face.boundingBox.top - 20));
+      paintSpanId.paint(canvas, Offset(face.boundingBox.left + 10, face.boundingBox.top - 20));
 
       // touchyCanvas.drawLine(
       //     Offset(face.boundingBox.left, face.boundingBox.bottom + 14),

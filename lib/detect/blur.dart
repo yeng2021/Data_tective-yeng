@@ -1,23 +1,25 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui show Image;
+import 'dart:io' show File;
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class Blur extends StatefulWidget {
-  final faces;
-  final images;
-  final imageSelected;
+  final List<Face> faces;
+  final File images;  // TODO: images 가 아니라 image 혹은 imageFile 로 해야하지 않을까?
+  final ui.Image imageSelected;
   Blur(this.faces, this.images, this.imageSelected);
+
   @override
-  _BlurState createState() => _BlurState(this.faces, this.images, this.imageSelected);
+  _BlurState createState() => _BlurState(faces, images, imageSelected);
 }
 
 class _BlurState extends State<Blur> {
   List<Face> faces;
-  final images;
+  File images;
   ui.Image imageSelected;
-  double _sigma = 15;
+  double _sigma = 5;
 
   _BlurState(this.faces, this.images, this.imageSelected);
 
@@ -26,22 +28,22 @@ class _BlurState extends State<Blur> {
     return Scaffold(
       appBar: NewGradientAppBar(
         elevation: 0,
-        gradient: LinearGradient(
-            colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        gradient: const LinearGradient(
+            colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Image.asset("assets/logo-white.png", width: 50,),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Image.asset("assets/logo-text-white.png", width: 100)
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () {},
-              child: Text(
+          TextButton(onPressed: () {},  // TODO: onPressed 구현 필요.
+              child: const Text(
                 '완료',
                 style: TextStyle(color: Colors.white),
               ))
@@ -49,14 +51,14 @@ class _BlurState extends State<Blur> {
       ),
       body: Column(
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.8,
             child: FittedBox(
               fit: BoxFit.contain,
               child: Stack(
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                       height: imageSelected.height.toDouble(),
                       width: imageSelected.width.toDouble(),
                       child: Image.file(images)
@@ -86,20 +88,22 @@ class _BlurState extends State<Blur> {
               ),
             ),
           ),
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.6,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('블러강도:', style: TextStyle(fontSize: 20),),
+                const Text('블러강도:', style: TextStyle(fontSize: 20),),
                 Expanded(
                   child: Slider.adaptive(
-                    min: 0,
-                      max: 100,
+                      min: 0,
+                      max: 10,
                       value: _sigma,
                       onChanged:(value) {
                         setState(() {
-                          _sigma = value;});}),
+                          _sigma = value;
+                        });
+                      }),
                 ),
               ],
             ),

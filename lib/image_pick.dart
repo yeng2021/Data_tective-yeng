@@ -140,7 +140,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   @override
   void initState() {
     super.initState();
-    imagePicker = new ImagePicker();
+    imagePicker = ImagePicker();
     openImagePicker();
   }
 
@@ -169,15 +169,15 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
     return Scaffold(
       appBar: NewGradientAppBar(
         elevation: 0,
-        gradient: LinearGradient(
-            colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        gradient: const LinearGradient(
+            colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Image.asset("assets/logo-white.png", width: 50,),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Image.asset("assets/logo-text-white.png", width: 100)
             ],
           ),
@@ -187,14 +187,11 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
               onPressed: () {
                 send(context, _image);
                 },
-              icon: Icon(Icons.arrow_forward_ios)),
-          IconButton(
-              onPressed: () {print(type);},
-              icon: Icon(Icons.print))
+              icon: const Icon(Icons.arrow_forward_ios))
         ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -205,7 +202,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                   openImagePicker();
                 },
                 child: Expanded(
-                  child: Container(
+                  child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height*0.7,
                     // decoration: BoxDecoration(
@@ -219,19 +216,13 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                             fit: BoxFit.contain,
                           ),
                         )
-                        : Container(
-                      // decoration: BoxDecoration(
-                      //     color: Colors.cyan),
-                      // width: 200,
-                      // height: 200,
-                      child: Icon(
-                        type.toString() == 'ImageSourceType.camera'
-                        ? Icons.camera_alt
-                        : Icons.image,
-                        size: 150,
-                        color: Colors.grey[800],
-                      ),
-                    ),
+                        : Icon(
+                          type.toString() == 'ImageSourceType.camera'
+                          ? Icons.camera_alt
+                          : Icons.image,
+                          size: 150,
+                          color: Colors.grey[800],
+                        ),
                   ),
                 ),
               ),

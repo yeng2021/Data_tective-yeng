@@ -14,14 +14,14 @@ import 'package:path_provider/path_provider.dart';
 ImagePicker imagePicker = ImagePicker();
 
 class ImageCover extends StatefulWidget {
-  final faces;
-  final images;
-  final imageSelected;
-  final _sticker;
+  final List<Face> faces;
+  final images;  // TODO: 안 쓰면 삭제 필요
+  final ui.Image imageSelected;
+  final _sticker;  // TODO: type 정의 필요
   ImageCover(this.faces, this.images, this.imageSelected, this._sticker);
 
   @override
-  _ImageCoverState createState() => _ImageCoverState(this.faces, this.images, this.imageSelected, this._sticker);
+  _ImageCoverState createState() => _ImageCoverState(faces, images, imageSelected, _sticker);
 }
 
 class _ImageCoverState extends State<ImageCover> {
@@ -74,34 +74,35 @@ class _ImageCoverState extends State<ImageCover> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: NewGradientAppBar(
         elevation: 0,
-        gradient: LinearGradient(
-            colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        gradient: const LinearGradient(
+            colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Image.asset("assets/logo-white.png", width: 50,),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Image.asset("assets/logo-text-white.png", width: 100)
             ],
           ),
         ),
         actions: [
           TextButton(onPressed: getImage,
-              child: Text('검열', style: TextStyle(color: Colors.white),))
+              child: const Text('검열', style: TextStyle(color: Colors.white),))
         ],
       ),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.8,
         child: FittedBox(
           fit: BoxFit.contain,
-          child: Container(
+          child: SizedBox(
             height: imageSelected.height.toDouble(),
             width: imageSelected.width.toDouble(),
             child: CanvasTouchDetector(

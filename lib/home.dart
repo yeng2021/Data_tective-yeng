@@ -10,6 +10,8 @@ ImagePicker picker = ImagePicker();
 enum ImageSourceType { gallery, camera }
 
 class Home extends StatefulWidget {
+  const Home({Key key}) : super(key: key);
+
   @override
   State<Home> createState() => _HomeState();
 }
@@ -26,6 +28,7 @@ class _HomeState extends State<Home> {
         MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type, _sticker)));
   }
 
+  @override
   void initState() {
     super.initState();  // initState()를 사용할 때 반드시 사용해야 한다.
     _loadId();  // 이 함수를 실행한다.
@@ -34,7 +37,7 @@ class _HomeState extends State<Home> {
   _loadId() async {
     _prefs = await SharedPreferences.getInstance(); // 캐시에 저장되어있는 값을 불러온다.
     setState(() { // 캐시에 저장된 값을 반영하여 현재 상태를 설정한다.
-      // SharedPreferences에 id, pw로 저장된 값을 읽어 필드에 저장. 없을 경우 0으로 대입
+      // SharedPreferences 에 id, pw로 저장된 값을 읽어 필드에 저장. 없을 경우 0으로 대입
       _sticker = (_prefs.getInt('sticker') ?? 0);
       print(_sticker); // Run 기록으로 id와 pw의 값을 확인할 수 있음.
     });
@@ -73,58 +76,9 @@ class _HomeState extends State<Home> {
             )
         ],
       ),
-      // Padding(
-      //   padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-      //   child: GridView.count(
-      //       crossAxisCount: 2,
-      //     crossAxisSpacing: 80,
-      //   mainAxisSpacing: 50,
-      //   children: [
-      //     TextButton(
-      //       onPressed: () {
-      //         _sticker = 0;
-      //         _prefs.setInt('sticker', _sticker);
-      //       },
-      //       child: Column(
-      //         children: [
-      //           Image.asset('assets/blur.png',),
-      //           SizedBox(height: 20,),
-      //           Text(
-      //               'Blur',
-      //           style: TextStyle(
-      //             fontSize: 30,
-      //             fontFamily: 'Staatliches-Regular'
-      //           ),),
-      //         ],
-      //       ),
-      //     ),
-      //     TextButton(
-      //       onPressed: () {
-      //         _sticker = 1;
-      //         _prefs.setInt('sticker', _sticker);
-      //       },
-      //       child: Column(
-      //         children: [
-      //           Expanded(child: Image.asset('assets/sticker1.png', fit: BoxFit.contain,)),
-      //           SizedBox(height: 20,),
-      //           Text(
-      //             'Heart',
-      //             style: TextStyle(
-      //                 fontSize: 30,
-      //                 fontFamily: 'Staatliches-Regular'
-      //             ),),
-      //         ],
-      //       ),
-      //     ),
-      //     Image.asset('assets/giyu.png'),
-      //     Image.asset('assets/shinobu.png'),
-      //     Image.asset('assets/logo-text.png'),
-      //     Image.asset('assets/splash.png'),
-      //   ],),
-      // ),
       Center(
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
+          padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -135,47 +89,43 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.image),
+                      icon: const Icon(Icons.image),
                       iconSize: 150,
                       onPressed: () {
                         _handleURLButtonPress(context, ImageSourceType.gallery, _sticker);
                       },
                     ),
-                    Center(
-                      child: Container(
-                        child: Text(
-                          '갤러리에서 이미지 가져오기',
-                          style: TextStyle(
-                            fontSize: 28.0,
-                            fontFamily: 'SCDream4',
-                          ),
+                    const Center(
+                      child: Text(
+                        '갤러리에서 이미지 가져오기',
+                        style: TextStyle(
+                          fontSize: 28.0,
+                          fontFamily: 'SCDream4',
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 80.0),
+              const SizedBox(height: 80.0),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.photo_camera),
+                      icon: const Icon(Icons.photo_camera),
                       iconSize: 150,
                       onPressed: () {
                         _handleURLButtonPress(context, ImageSourceType.camera, _sticker);
                       },
                     ),
-                    Center(
-                      child: Container(
-                        child: Text(
-                          '카메라에서 이미지 가져오기',
-                          style: TextStyle(
-                            fontSize: 28.0,
-                            fontFamily: 'SCDream4',
-                          ),
+                    const Center(
+                      child: Text(
+                        '카메라에서 이미지 가져오기',
+                        style: TextStyle(
+                          fontSize: 28.0,
+                          fontFamily: 'SCDream4',
                         ),
                       ),
                     ),
@@ -187,22 +137,22 @@ class _HomeState extends State<Home> {
         ),
       ),
       TextButton(
-        onPressed: () {},
-        child: Text('Working on it!!'),
+        onPressed: () {},   // TODO: onPressed 구현 필요.
+        child: const Text('Working on it!!'),
       ),
     ];
     return Scaffold(
       appBar: NewGradientAppBar(
         elevation: 0,
-        gradient: LinearGradient(
-          colors: [const Color(0xff647dee), const Color(0xff7f53ac)]
+        gradient: const LinearGradient(
+          colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Image.asset("assets/logo-white.png", width: 50,),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Image.asset("assets/logo-text-white.png", width: 100)
             ],
           ),
@@ -214,44 +164,47 @@ class _HomeState extends State<Home> {
                 barrierDismissible: true,
                 builder: (BuildContext context) {
                   if (_selectedIndex==0) {
-                  return AlertDialog(
-                    title: Text('스티커 설정'),
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: [
-                          Text('사진을 검열할 방법을 설정할 수 있습니다.'),
-                          Text('블러, 스티커를 활용하여 여러가지 방법으로 사진을 검열해보세요.'),
-                        ],
-                      ),
-                    ),
-                  );}
-                  if (_selectedIndex==1) {
                     return AlertDialog(
-                      title: Text('사진 업로드'),
+                      title: const Text('스티커 설정'),
                       content: SingleChildScrollView(
                         child: ListBody(
-                          children: [
+                          children: const [
+                            Text('사진을 검열할 방법을 설정할 수 있습니다.'),
+                            Text('블러, 스티커를 활용하여 여러가지 방법으로 사진을 검열해보세요.'),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  else if (_selectedIndex==1) {
+                    return AlertDialog(
+                      title: const Text('사진 업로드'),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: const [
                             Text('갤러리에서 이미지를 불러오거나 카메라를 사용해 직접 사진을 찍을 수 있습니다.'),
                             Text('업로드 된 사진은 AI 탐정이 직접 검열해 준답니다.'),
                           ],
                         ),
                       ),
-                    );}
-                  if (_selectedIndex==2) {
+                    );
+                  }
+                  else {   //if (_selectedIndex==2) {  // if else 구분에서 else 는 필수입니다.
                     return AlertDialog(
-                      title: Text('자세한 설명'),
+                      title: const Text('자세한 설명'),
                       content: SingleChildScrollView(
                         child: ListBody(
-                          children: [
+                          children: const [
                             Text('이 앱에 대한 설명입니다.'),
                           ],
                         ),
                       ),
-                    );}
+                    );
+                  }
                 }
             );
           },
-              icon: Icon(Icons.help_outline))
+              icon: const Icon(Icons.help_outline))
         ],
       ),
       body: Center(
@@ -260,13 +213,13 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: ConvexAppBar(
         top: -25,
         backgroundColor: const Color(0xff7f53ac),
-        gradient: LinearGradient(
-            colors: [const Color(0xff7f53ac), const Color(0xff647dee), const Color(0xff7f53ac),]
+        gradient: const LinearGradient(
+            colors: [Color(0xff7f53ac), Color(0xff647dee), Color(0xff7f53ac),]
         ),
         // activeColor: const Color(0xffff9d00),
         style: TabStyle.fixedCircle,
         elevation: 0,
-        items: [
+        items: const [
           TabItem(icon: Icons.star, title: 'Sticker'),
           TabItem(icon: Icons.add, title: 'Add'),
           TabItem(icon: Icons.live_help, title: 'Info'),
