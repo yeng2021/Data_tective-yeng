@@ -8,8 +8,6 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
 ImagePicker picker = ImagePicker();
 
-enum ImageSourceType { gallery, camera }
-
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
 
@@ -39,7 +37,7 @@ class _HomeState extends State<Home> {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
       _stickerId = (_prefs.getInt('sticker') ?? 0);
-      print(_stickerId);
+      print(_stickerId); //TODO: 제출할 때 없애기
     });
   }
 
@@ -126,78 +124,6 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
-          // child: Column(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   crossAxisAlignment: CrossAxisAlignment.stretch,
-          //   children: [
-          //     Expanded(
-          //       child: IconButton(
-          //         icon: const Icon(Icons.image),
-          //         iconSize: 150,
-          //         onPressed: () {
-          //           _handleURLButtonPress(context, ImageSourceType.gallery, _stickerId);
-          //         },
-          //       ),
-          //     ),
-          //     const Expanded(
-          //       child: Center(
-          //         child: Text(
-          //           '갤러리에서 이미지 가져오기',
-          //           style: TextStyle(
-          //             fontSize: 28.0,
-          //             fontFamily: 'SCDream4',
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     const SizedBox(height: 80.0),
-          //     Expanded(
-          //       child: IconButton(
-          //         icon: const Icon(Icons.photo_camera),
-          //         iconSize: 150,
-          //         onPressed: () {
-          //           _handleURLButtonPress(context, ImageSourceType.camera, _stickerId);
-          //         },
-          //       ),
-          //     ),
-          //     const Expanded(
-          //       child: Center(
-          //         child: Text(
-          //           '카메라에서 이미지 가져오기',
-          //           style: TextStyle(
-          //             fontSize: 28.0,
-          //             fontFamily: 'SCDream4',
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     const SizedBox(height: 80.0),
-          //     // Expanded(
-          //     //   child: Column(
-          //     //     mainAxisAlignment: MainAxisAlignment.center,
-          //     //     crossAxisAlignment: CrossAxisAlignment.stretch,
-          //     //     children: [
-          //     //       IconButton(
-          //     //         icon: const Icon(Icons.photo_camera),
-          //     //         iconSize: 150,
-          //     //         onPressed: () {
-          //     //           _handleURLButtonPress(context, ImageSourceType.camera, _stickerId);
-          //     //         },
-          //     //       ),
-          //     //       const Center(
-          //     //         child: Text(
-          //     //           '카메라에서 이미지 가져오기',
-          //     //           style: TextStyle(
-          //     //             fontSize: 28.0,
-          //     //             fontFamily: 'SCDream4',
-          //     //           ),
-          //     //         ),
-          //     //       ),
-          //     //     ],
-          //     //   ),
-          //     // ),
-          //   ],
-          // ),
         ),
       ),
       TextButton(
@@ -211,15 +137,13 @@ class _HomeState extends State<Home> {
         gradient: const LinearGradient(
           colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Image.asset("assets/logo-white.png", width: 50,),
-              const SizedBox(width: 10),
-              Image.asset("assets/logo-text-white.png", width: 100)
-            ],
-          ),
+        title: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Data-tective',
+            style: TextStyle(
+              fontFamily: 'Staatliches-Regular'
+            ),),
         ),
         actions: [
           IconButton(onPressed: () {

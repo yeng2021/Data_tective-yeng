@@ -1,4 +1,3 @@
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:data_tective/detect/detection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
@@ -12,114 +11,10 @@ ImagePicker picker = ImagePicker();
 
 enum ImageSourceType { gallery, camera }
 
-// class Imagepick extends StatelessWidget {
-//
-//   void _handleURLButtonPress(BuildContext context, var type) {
-//     Navigator.push(context,
-//         MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         elevation: 0,
-//         backgroundColor: const Color(0xff0063ff),
-//         leadingWidth: 600,
-//         leading: Padding(
-//           padding: const EdgeInsets.all(8.0),
-//           child: Row(
-//             children: [
-//               Image.asset("assets/logo-white.png", width: 50,),
-//               SizedBox(width: 10),
-//               Image.asset("assets/logo-text-white.png", width: 100)
-//             ],
-//           ),
-//         ),
-//       ),
-//       body: Center(
-//         child: Container(
-//           padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             children: [
-//               Expanded(
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: [
-//                     IconButton(
-//                       icon: Icon(Icons.image),
-//                       iconSize: 150,
-//                       onPressed: () {
-//                         _handleURLButtonPress(context, ImageSourceType.gallery);
-//                       },
-//                     ),
-//                     Center(
-//                       child: Container(
-//                         child: Text(
-//                           'Gallery',
-//                           style: TextStyle(
-//                             fontSize: 28.0,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               SizedBox(height: 80.0),
-//               Expanded(
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: [
-//                     IconButton(
-//                       icon: Icon(Icons.photo_camera),
-//                       iconSize: 150,
-//                       onPressed: () {
-//                         _handleURLButtonPress(context, ImageSourceType.camera);
-//                       },
-//                     ),
-//                     Center(
-//                       child: Container(
-//                         child: Text(
-//                           'Camera',
-//                           style: TextStyle(
-//                             fontSize: 28.0,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//       bottomNavigationBar: ConvexAppBar(
-//         top: -25,
-//         backgroundColor: const Color(0xff0063ff),
-//         // activeColor: const Color(0xffff9d00),
-//         style: TabStyle.fixedCircle,
-//         elevation: 0,
-//         items: [
-//           TabItem(icon: Icons.star, title: 'Sticker'),
-//           TabItem(icon: Icons.add, title: 'Add'),
-//           TabItem(icon: Icons.people, title: 'Profile'),
-//         ],
-//         initialActiveIndex: 1,//optional, default as 0
-//         onTap: (int i) => print('click index=$i'),
-//       ),
-//     );
-//   }
-// }
-
 class ImageFromGalleryEx extends StatefulWidget {
-  final sourceType;   // ImageSourceType type 설정하면 error 나는데, 잘 모르겠음;;
+  final ImageSourceType sourceType;
   final int _stickerId;
-  ImageFromGalleryEx(this.sourceType, this._stickerId);
+  const ImageFromGalleryEx(this.sourceType, this._stickerId, {Key key}) : super(key: key);
 
   @override
   ImageFromGalleryExState createState() => ImageFromGalleryExState(sourceType, _stickerId);
@@ -127,9 +22,9 @@ class ImageFromGalleryEx extends StatefulWidget {
 
 class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   File _image;
-  ImagePicker imagePicker;
-  var sourceType;  // ImageSourceType type 으로 설정하면 error 발생;;
-  int _stickerId;
+  ImagePicker imagePicker = ImagePicker();
+  ImageSourceType sourceType;
+  final int _stickerId;
 
   ui.Image imageSelected;
   List<Face> faces = [];
@@ -139,13 +34,19 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   @override
   void initState() {
     super.initState();
-    imagePicker = ImagePicker();
     openImagePicker();
   }
 
   void openImagePicker() async {
     XFile image = await imagePicker.pickImage(
-        source: sourceType.index == ImageSourceType.camera.index
+        source:
+        // if (sourceType.index == ImageSourceType.camera.index) {
+        //   ImageSource.camera
+        // }
+        // else {
+        //   ImageSource.gallery
+        // };
+        sourceType.index == ImageSourceType.camera.index
         ? ImageSource.camera
         : ImageSource.gallery,
         imageQuality: 50,
@@ -168,61 +69,87 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
         gradient: const LinearGradient(
             colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Image.asset("assets/logo-white.png", width: 50,),
-              const SizedBox(width: 10),
-              Image.asset("assets/logo-text-white.png", width: 100)
-            ],
-          ),
+        title: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            '사진 불러오기',
+            style: TextStyle(
+                fontFamily: 'SCDream4'
+            ),),
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                send(context, _image);
-                },
-              icon: const Icon(Icons.arrow_forward_ios))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //         send(context, _image);
+        //         },
+        //       icon: const Icon(Icons.arrow_forward_ios))
+        // ],
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Center(
-              child: GestureDetector(
-                onTap: () {
-                  openImagePicker();
-                },
-                child: Expanded(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height*0.7,
-                    // decoration: BoxDecoration(
-                    //     color: Colors.red[200]),
-                    child: _image != null
-                        ? Expanded(
-                          child: Image.file(
-                            _image,
-                            width: 200.0,
-                            height: 200.0,
-                            fit: BoxFit.contain,
-                          ),
-                        )
-                        : Icon(sourceType.index == ImageSourceType.camera.index
-                          ? Icons.camera_alt
-                          : Icons.image,
-                          size: 150,
-                          color: Colors.grey[800],
-                        ),
-                  ),
-                ),
-              ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
+          child: Container(
+            child: _image != null
+            ? Column(
+              children: [
+                Flexible(child: Image.file(_image, fit: BoxFit.contain,)),
+                const SizedBox(height: 10),
+                OutlinedButton(
+                  onPressed: () {
+                    send(context, _image);
+                  },
+                  child: const Text('이 사진 사용하기'),
+                )
+              ],
             )
-          ],
+                :Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                    Icons.image_not_supported,
+                    size: 150),
+                const SizedBox(height: 50.0),
+                const Text(
+                  '아직 아무 사진을 고르지 않으셨습니다',
+                  style: TextStyle(
+                      fontFamily: 'SCDream4',
+                      fontSize: 12,
+                      color: Colors.grey
+                  ),),
+                const SizedBox(height: 20,),
+                OutlinedButton(
+                  onPressed: openImagePicker,
+                  child: const Text(
+                      '사진 고르기',
+                    style: TextStyle(
+                      fontFamily: 'SCDream4',
+                      fontSize: 14
+                    ),),
+                )
+              ],
+            )
+            // width: MediaQuery.of(context).size.width,
+            // height: MediaQuery.of(context).size.height,
+            // child: SizedBox(
+            //   width: MediaQuery.of(context).size.width,
+            //   height: MediaQuery.of(context).size.height,
+            //   child: _image != null
+            //       ? Expanded(
+            //     child: Image.file(
+            //       _image,
+            //       width: 200.0,
+            //       height: 200.0,
+            //       fit: BoxFit.contain,
+            //     ),
+            //   )
+            //       : Icon(sourceType.index == ImageSourceType.camera.index
+            //       ? Icons.camera_alt
+            //       : Icons.image,
+            //     size: 150,
+            //     color: Colors.grey[800],
+            //   ),
+            // ),
+          ),
         ),
       ),
     );
