@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +20,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   int _selectedIndex = 1;
-
   int _stickerId = 0;
+
   SharedPreferences _prefs;
 
   void _handleURLButtonPress(BuildContext context, ImageSourceType sourceType, _stickerId) {
@@ -30,16 +31,15 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    super.initState();  // initState()를 사용할 때 반드시 사용해야 한다.
-    _loadId();  // 이 함수를 실행한다.
+    super.initState();
+    _loadId();
   }
 
   _loadId() async {
-    _prefs = await SharedPreferences.getInstance(); // 캐시에 저장되어있는 값을 불러온다.
-    setState(() { // 캐시에 저장된 값을 반영하여 현재 상태를 설정한다.
-      // SharedPreferences 에 id, pw로 저장된 값을 읽어 필드에 저장. 없을 경우 0으로 대입
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
       _stickerId = (_prefs.getInt('sticker') ?? 0);
-      print(_stickerId); // Run 기록으로 id와 pw의 값을 확인할 수 있음.
+      print(_stickerId);
     });
   }
 
@@ -63,6 +63,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // 투명색
+    ));
+
     List _widgetOptions = [
       GridView.count(
         crossAxisCount: 2,
@@ -83,57 +89,115 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.image),
-                      iconSize: 150,
+              const Icon(
+                Icons.image,
+                size: 150,
+              ),
+              const SizedBox(height: 50.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton(
                       onPressed: () {
                         _handleURLButtonPress(context, ImageSourceType.gallery, _stickerId);
                       },
-                    ),
-                    const Center(
-                      child: Text(
-                        '갤러리에서 이미지 가져오기',
+                      child: const Text(
+                        '갤러리에서 이미지 불러오기',
                         style: TextStyle(
-                          fontSize: 28.0,
-                          fontFamily: 'SCDream4',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 80.0),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.photo_camera),
-                      iconSize: 150,
+                          fontSize: 14.0,
+                          fontFamily: 'SCDream4'
+                        )
+                      )
+                  ),
+                  const SizedBox(width: 30.0),
+                  OutlinedButton(
                       onPressed: () {
                         _handleURLButtonPress(context, ImageSourceType.camera, _stickerId);
                       },
-                    ),
-                    const Center(
-                      child: Text(
-                        '카메라에서 이미지 가져오기',
-                        style: TextStyle(
-                          fontSize: 28.0,
-                          fontFamily: 'SCDream4',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                      child: const Text(
+                          '카메라에서 이미지 불러오기',
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              fontFamily: 'SCDream4'
+                          )
+                      )
+                  ),
+                ],
               ),
             ],
           ),
+          // child: Column(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   crossAxisAlignment: CrossAxisAlignment.stretch,
+          //   children: [
+          //     Expanded(
+          //       child: IconButton(
+          //         icon: const Icon(Icons.image),
+          //         iconSize: 150,
+          //         onPressed: () {
+          //           _handleURLButtonPress(context, ImageSourceType.gallery, _stickerId);
+          //         },
+          //       ),
+          //     ),
+          //     const Expanded(
+          //       child: Center(
+          //         child: Text(
+          //           '갤러리에서 이미지 가져오기',
+          //           style: TextStyle(
+          //             fontSize: 28.0,
+          //             fontFamily: 'SCDream4',
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //     const SizedBox(height: 80.0),
+          //     Expanded(
+          //       child: IconButton(
+          //         icon: const Icon(Icons.photo_camera),
+          //         iconSize: 150,
+          //         onPressed: () {
+          //           _handleURLButtonPress(context, ImageSourceType.camera, _stickerId);
+          //         },
+          //       ),
+          //     ),
+          //     const Expanded(
+          //       child: Center(
+          //         child: Text(
+          //           '카메라에서 이미지 가져오기',
+          //           style: TextStyle(
+          //             fontSize: 28.0,
+          //             fontFamily: 'SCDream4',
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //     const SizedBox(height: 80.0),
+          //     // Expanded(
+          //     //   child: Column(
+          //     //     mainAxisAlignment: MainAxisAlignment.center,
+          //     //     crossAxisAlignment: CrossAxisAlignment.stretch,
+          //     //     children: [
+          //     //       IconButton(
+          //     //         icon: const Icon(Icons.photo_camera),
+          //     //         iconSize: 150,
+          //     //         onPressed: () {
+          //     //           _handleURLButtonPress(context, ImageSourceType.camera, _stickerId);
+          //     //         },
+          //     //       ),
+          //     //       const Center(
+          //     //         child: Text(
+          //     //           '카메라에서 이미지 가져오기',
+          //     //           style: TextStyle(
+          //     //             fontSize: 28.0,
+          //     //             fontFamily: 'SCDream4',
+          //     //           ),
+          //     //         ),
+          //     //       ),
+          //     //     ],
+          //     //   ),
+          //     // ),
+          //   ],
+          // ),
         ),
       ),
       TextButton(
