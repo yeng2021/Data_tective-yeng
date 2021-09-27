@@ -1,9 +1,7 @@
 import 'package:data_tective/detect/detection_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'dart:ui' as ui show Image;
 
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
@@ -21,13 +19,12 @@ class ImageFromGalleryEx extends StatefulWidget {
 }
 
 class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
-  File _image;
+
   ImagePicker imagePicker = ImagePicker();
+
+  File imageFile;
   ImageSourceType sourceType;
   final int _stickerId;
-
-  ui.Image imageSelected;
-  List<Face> faces = [];
 
   ImageFromGalleryExState(this.sourceType, this._stickerId);
 
@@ -40,23 +37,17 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   void openImagePicker() async {
     XFile image = await imagePicker.pickImage(
         source:
-        // if (sourceType.index == ImageSourceType.camera.index) {
-        //   ImageSource.camera
-        // }
-        // else {
-        //   ImageSource.gallery
-        // };
         sourceType.index == ImageSourceType.camera.index
         ? ImageSource.camera
         : ImageSource.gallery,
         imageQuality: 50,
         preferredCameraDevice: CameraDevice.front);
     setState(() {
-      _image = File(image.path);
+      imageFile = File(image.path);
     });
   }
 
-  void send(BuildContext context, var file) {
+  void send(BuildContext context, File file) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => DetectionScreen(file, _stickerId)));
   }
@@ -89,14 +80,14 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
           child: Container(
-            child: _image != null
+            child: imageFile != null
             ? Column(
               children: [
-                Flexible(child: Image.file(_image, fit: BoxFit.contain,)),
+                Flexible(child: Image.file(imageFile, fit: BoxFit.contain,)),
                 const SizedBox(height: 10),
                 OutlinedButton(
                   onPressed: () {
-                    send(context, _image);
+                    send(context, imageFile);
                   },
                   child: const Text('이 사진 사용하기'),
                 )

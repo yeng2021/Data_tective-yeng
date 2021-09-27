@@ -1,3 +1,4 @@
+import 'package:data_tective/detect/data_masking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +23,7 @@ class _HomeState extends State<Home> {
 
   SharedPreferences _prefs;
 
-  void _handleURLButtonPress(BuildContext context, ImageSourceType sourceType, _stickerId) {
+  void sendToImagePick(BuildContext context, ImageSourceType sourceType, _stickerId) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => ImageFromGalleryEx(sourceType, _stickerId)));
   }
@@ -97,7 +98,7 @@ class _HomeState extends State<Home> {
                 children: [
                   OutlinedButton(
                       onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.gallery, _stickerId);
+                        sendToImagePick(context, ImageSourceType.gallery, _stickerId);
                       },
                       child: const Text(
                         '갤러리에서 이미지 불러오기',
@@ -110,7 +111,7 @@ class _HomeState extends State<Home> {
                   const SizedBox(width: 30.0),
                   OutlinedButton(
                       onPressed: () {
-                        _handleURLButtonPress(context, ImageSourceType.camera, _stickerId);
+                        sendToImagePick(context, ImageSourceType.camera, _stickerId);
                       },
                       child: const Text(
                           '카메라에서 이미지 불러오기',
@@ -127,7 +128,10 @@ class _HomeState extends State<Home> {
         ),
       ),
       TextButton(
-        onPressed: () {},   // TODO: onPressed 구현 필요.
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const DataMasking())); //그냥 테스트 해보려고 넣은 페이지 입니다. 무시하셔도 됩니다!!
+        },   // TODO: onPressed 구현 필요.
         child: const Text('Working on it!!'),
       ),
     ];

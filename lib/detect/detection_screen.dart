@@ -1,39 +1,33 @@
+import 'dart:io';
 import 'dart:ui';
 import 'dart:ui' as ui show Image;
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:touchable/touchable.dart';
-
-import '../home.dart';
 import 'blur.dart';
 import 'sticker_cover.dart';
 
 class DetectionScreen extends StatefulWidget {
-  final image;   // TODO: type 정의 필요
+  final File imageFile;
   final int _stickerId;
-  DetectionScreen(this.image, this._stickerId);
+  const DetectionScreen(this.imageFile, this._stickerId);
 
   @override
-  _DetectionScreenState createState() => _DetectionScreenState(image, _stickerId);
+  _DetectionScreenState createState() => _DetectionScreenState(imageFile, _stickerId);
 }
 
 class _DetectionScreenState extends State<DetectionScreen> {
   // ui.Image imageSelected;
   // List<Face> faces;
 
-  var image;  // TODO: type 정의 필요
-  int _stickerId;
-  _DetectionScreenState(this.image, this._stickerId);
+  File imageFile;
+  final int _stickerId;
+  _DetectionScreenState(this.imageFile, this._stickerId);
 
-  ui.Image imageSelected;
+  ui.Image imageImage;
   List<Face> faces = [];
   List<TextBlock> textBlocks = [];
-
-  double imageHeight;
-  double imageWidth;
 
   @override
   void initState() {
@@ -42,10 +36,10 @@ class _DetectionScreenState extends State<DetectionScreen> {
   }
 
   void getImage() async {
-    var imageFile = await image.readAsBytes();
-    ui.Image imageFile2 = await decodeImageFromList(imageFile);
+    var imageFile3 = await imageFile.readAsBytes();
+    ui.Image imageFile2 = await decodeImageFromList(imageFile3);
 
-    final InputImage inputImage = InputImage.fromFilePath(image.path);
+    final InputImage inputImage = InputImage.fromFilePath(imageFile.path);
     final FaceDetector faceDetector = GoogleMlKit.vision.faceDetector(const FaceDetectorOptions(
       enableClassification: true,
       enableTracking: true,
@@ -57,42 +51,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
     final List<TextBlock> outputBlocks = recognisedText.blocks;
 
     setState(() {
-      imageSelected = imageFile2;
+      imageImage = imageFile2;
       faces = outputFaces;
       textBlocks = outputBlocks;
     });
   }
-
-  // void getImage() async {
-  //   // final PickedFile pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
-  //   // if (pickedFile != null) {
-  //     var imageFile = await image.readAsBytes();
-  //     ui.Image imageFile2 = await decodeImageFromList(imageFile);
-  //
-  //     final InputImage inputImage = InputImage.fromFilePath(image.path);
-  //     final FaceDetector faceDetector = GoogleMlKit.vision.faceDetector(FaceDetectorOptions(
-  //       enableClassification: true,
-  //       enableTracking: true,
-  //     ));
-  //
-  //     final List<Face> outputFaces = await faceDetector.processImage(inputImage);
-  //
-  //     setState(() {
-  //       imageSelected = imageFile2;
-  //       faces = outputFaces;
-  //     });
-  //   // }
-  // }
-
-  // double x = 0.0;
-  // double y = 0.0;
-  //
-  // void _updateLocation(TapDownDetails details) {
-  //   setState(() {
-  //     x = details.globalPosition.dx;
-  //     y = details.globalPosition.dy;
-  //   });
-  // }
 
   void _sendBlurFace(context, var faces, var images, var imageSelected) {
     Navigator.push(
@@ -107,20 +70,6 @@ class _DetectionScreenState extends State<DetectionScreen> {
       MaterialPageRoute(builder: (context) => ImageCover(faces, images, imageSelected, _stickerId)),
     );
   }
-
-  // getIntValuesSF() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   //Return int
-  //   int intValue = prefs.getInt('intValue');
-  //   return intValue;
-  // }
-
-  // final PanelController _panelController = PanelController();
-  // bool _visible = false;
-  //
-  // Future<void> hidePanel() {
-  //   _panelController.hide();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -144,8 +93,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
           TextButton(
               onPressed: () {
                 _stickerId == 1
-                    ?_sendBlurFace(context, faces, image, imageSelected)
-                    :_sendCoverFace(context,faces,image,imageSelected, _stickerId);
+                    ?_sendBlurFace(context, faces, imageFile, imageImage)
+                    :_sendCoverFace(context,faces,imageFile,imageImage, _stickerId);
               },
               child: const Text('완료', style: TextStyle(color: Colors.white),)),
           TextButton(
@@ -166,49 +115,19 @@ class _DetectionScreenState extends State<DetectionScreen> {
           child: FittedBox(
             fit: BoxFit.contain,
              child: SizedBox(
-               height: imageSelected != null
-                 ?imageSelected.height.toDouble()
+               height: imageImage != null
+                 ?imageImage.height.toDouble()
                :300,
-               width: imageSelected != null
-                 ?imageSelected.width.toDouble()
+               width: imageImage != null
+                 ?imageImage.width.toDouble()
                :300,
                // child: Image.file(image),
                child: CanvasTouchDetector(
                  builder: (context) => CustomPaint(
-                   painter: FaceDraw(context, faces: faces, image: imageSelected, textBlocks: textBlocks),
+                   painter: FaceDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
                  ),
                ),
              ),
-             // Image.asset('assets/splash.png')
-             // Stack(
-             //   children: [
-             //     if (imageSelected != null)
-             //       SizedBox(
-             //           height: imageSelected.height.toDouble(),
-             //           width: imageSelected.width.toDouble(),
-             //           child: Icon(
-             //             Icons.image,
-             //             size: imageSelected.width.toDouble() >= imageSelected.height.toDouble()
-             //                 ? imageSelected.width.toDouble() :imageSelected.height.toDouble(),
-             //             color: Colors.transparent,
-             //           )
-             //       ),
-             //     Align(
-             //       alignment: Alignment.center,
-             //       child:
-             //       Container(
-             //         height: imageSelected.height.toDouble(),
-             //         width: imageSelected.width.toDouble(),
-             //         // child: Image.file(image),
-             //         child: CanvasTouchDetector(
-             //           builder: (context) => CustomPaint(
-             //             painter: FaceDraw(context, faces: faces, image: imageSelected, textBlocks: textBlocks),
-             //           ),
-             //         ),
-             //       ),
-             //     )
-             //   ],
-             // ),
           ),
         ),
       ),
@@ -226,10 +145,10 @@ class _DetectionScreenState extends State<DetectionScreen> {
 class FaceDraw extends CustomPainter {
   List<Face> faces;
   List<TextBlock> textBlocks;
-  ui.Image image;
+  ui.Image imageImage;
   final BuildContext context;
 
-  FaceDraw(this.context,{@required this.faces, @required this.image, @required this.textBlocks});
+  FaceDraw(this.context,{@required this.faces, @required this.imageImage, @required this.textBlocks});
 
   @override
 
@@ -237,7 +156,7 @@ class FaceDraw extends CustomPainter {
     TouchyCanvas touchyCanvas = TouchyCanvas(context, canvas);
 
     touchyCanvas.drawImage(
-        image,
+        imageImage,
         Offset.zero,
         Paint()
     );
@@ -252,7 +171,7 @@ class FaceDraw extends CustomPainter {
                 barrierDismissible: false,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text('개인고유식별 번호 유출 위험'),
+                    title: const Text('개인고유식별 번호 노출 위험'),
                     content: SingleChildScrollView(
                       child: ListBody(
                         children: [
@@ -302,7 +221,7 @@ class FaceDraw extends CustomPainter {
 
       touchyCanvas.drawLine(
         Offset(textBlock.rect.left + 5, textBlock.rect.top - 12),
-        Offset(textBlock.rect.right - 5, textBlock.rect.top - 12),
+        Offset(textBlock.rect.left + 160, textBlock.rect.top - 12),
         Paint()
           ..color = Colors.red.withOpacity(0.8)
           ..strokeWidth = 18
@@ -316,7 +235,7 @@ class FaceDraw extends CustomPainter {
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
-          text: "!",
+          text: "자동차 번호판 노출 위험!",
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
@@ -362,7 +281,6 @@ class FaceDraw extends CustomPainter {
                           ],
                         ),
                         onPressed: () {
-                          print('You clicked' "ID: ${face.trackingId}");
                           faces.remove(face);
                           Navigator.of(context).pop();
                         },)
@@ -401,7 +319,7 @@ class FaceDraw extends CustomPainter {
 
       touchyCanvas.drawLine(
                 Offset(face.boundingBox.left + 5, face.boundingBox.top - 12),
-                Offset(face.boundingBox.right - 5, face.boundingBox.top - 12),
+                Offset(face.boundingBox.left + 120, face.boundingBox.top - 12),
                 Paint()
                   ..color = Colors.red.withOpacity(0.8)
                   ..strokeWidth = 18
@@ -415,7 +333,7 @@ class FaceDraw extends CustomPainter {
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
-          text: "!",
+          text: "초상권 침해 위험!",
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
@@ -423,31 +341,6 @@ class FaceDraw extends CustomPainter {
 
       paintSpanId.layout();
       paintSpanId.paint(canvas, Offset(face.boundingBox.left + 10, face.boundingBox.top - 20));
-
-      // touchyCanvas.drawLine(
-      //     Offset(face.boundingBox.left, face.boundingBox.bottom + 14),
-      //     Offset(face.boundingBox.right, face.boundingBox.bottom + 14),
-      //     Paint()
-      //       ..color = Colors.black.withOpacity(0.7)
-      //       ..strokeWidth = 20
-      //       ..style = PaintingStyle.fill);
-
-      // TextPainter paintSmilingStatus = new TextPainter(
-      //   text: TextSpan(
-      //     style: TextStyle(
-      //       color: Colors.white,
-      //       fontSize: 15,
-      //       fontWeight: FontWeight.w700,
-      //       fontFamily: 'Roboto',
-      //     ),
-      //     text: "Smiling::${face.smilingProbability >= 0.5 ? "Yes" : "No"}",
-      //   ),
-      //   textAlign: TextAlign.center,
-      //   textDirection: TextDirection.ltr,
-      // );
-      //
-      // paintSmilingStatus.layout();
-      // paintSmilingStatus.paint(canvas, new Offset(face.boundingBox.left + 3, face.boundingBox.bottom + 5));
     }
   }
 
