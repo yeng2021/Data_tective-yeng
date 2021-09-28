@@ -60,14 +60,11 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
         gradient: const LinearGradient(
             colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            '사진 불러오기',
-            style: TextStyle(
-                fontFamily: 'SCDream4'
-            ),),
-        ),
+        title: const Text(
+          '사진 불러오기',
+          style: TextStyle(
+              fontFamily: 'SCDream4'
+          ),),
         // actions: [
         //   IconButton(
         //       onPressed: () {
@@ -78,18 +75,40 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           child: Container(
             child: imageFile != null
             ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Flexible(child: Image.file(imageFile, fit: BoxFit.contain,)),
                 const SizedBox(height: 10),
                 OutlinedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(MaterialState.disabled)) {
+                        return const Color(0xff7f53ac);
+                      }
+                      return const Color(0xff647dee);
+                    }),),
                   onPressed: () {
                     send(context, imageFile);
                   },
-                  child: const Text('이 사진 사용하기'),
+                  child: const Text(
+                      '이 이미지를 검열할래요',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'SCDream4'
+                    ),),
+                ),
+                OutlinedButton(
+                  onPressed: openImagePicker,
+                  child: const Text(
+                      '이미지를 다시 선택할래요',
+                    style: TextStyle(
+                      fontFamily: 'SCDream4'
+                    ),),
                 )
               ],
             )
@@ -97,7 +116,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(
-                    Icons.image_not_supported,
+                    Icons.image_not_supported_outlined,
                     size: 150),
                 const SizedBox(height: 50.0),
                 const Text(
@@ -110,9 +129,11 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                 const SizedBox(height: 20,),
                 OutlinedButton(
                   onPressed: openImagePicker,
-                  child: const Text(
-                      '사진 고르기',
-                    style: TextStyle(
+                  child: Text(
+                    sourceType.index == ImageSourceType.camera.index
+                      ?'카메라 열기'
+                    :'갤러리 열기',
+                    style: const TextStyle(
                       fontFamily: 'SCDream4',
                       fontSize: 14
                     ),),

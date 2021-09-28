@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       Center(
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -90,38 +90,42 @@ class _HomeState extends State<Home> {
             children: [
               const Icon(
                 Icons.image,
-                size: 150,
+                size: 50,
               ),
-              const SizedBox(height: 50.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  OutlinedButton(
-                      onPressed: () {
-                        sendToImagePick(context, ImageSourceType.gallery, _stickerId);
-                      },
-                      child: const Text(
-                        '갤러리에서 이미지 불러오기',
-                        style: TextStyle(
-                          fontSize: 14.0,
+              const SizedBox(height: 20.0),
+              const Center(
+                child: Text(
+                    '검열할 이미지를 선택해주세요',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontFamily: 'SCDream4'
+                  ),),
+              ),
+              const SizedBox(height: 20),
+              OutlinedButton(
+                  onPressed: () {
+                    sendToImagePick(context, ImageSourceType.gallery, _stickerId);
+                  },
+                  child: const Text(
+                    '갤러리 열기',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontFamily: 'SCDream4'
+                    )
+                  )
+              ),
+              const SizedBox(height: 10.0),
+              OutlinedButton(
+                  onPressed: () {
+                    sendToImagePick(context, ImageSourceType.camera, _stickerId);
+                  },
+                  child: const Text(
+                      '카메라 열기',
+                      style: TextStyle(
+                          fontSize: 18.0,
                           fontFamily: 'SCDream4'
-                        )
                       )
-                  ),
-                  const SizedBox(width: 30.0),
-                  OutlinedButton(
-                      onPressed: () {
-                        sendToImagePick(context, ImageSourceType.camera, _stickerId);
-                      },
-                      child: const Text(
-                          '카메라에서 이미지 불러오기',
-                          style: TextStyle(
-                              fontSize: 14.0,
-                              fontFamily: 'SCDream4'
-                          )
-                      )
-                  ),
-                ],
+                  )
               ),
             ],
           ),
@@ -141,14 +145,11 @@ class _HomeState extends State<Home> {
         gradient: const LinearGradient(
           colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            'Data-tective',
-            style: TextStyle(
-              fontFamily: 'Staatliches-Regular'
-            ),),
-        ),
+        title: const Text(
+          'Data-tective',
+          style: TextStyle(
+            fontFamily: 'Staatliches-Regular'
+          ),),
         actions: [
           IconButton(onPressed: () {
             showDialog(
@@ -209,12 +210,13 @@ class _HomeState extends State<Home> {
             colors: [Color(0xff7f53ac), Color(0xff647dee), Color(0xff7f53ac),]
         ),
         // activeColor: const Color(0xffff9d00),
-        style: TabStyle.fixedCircle,
+        style: TabStyle.fixed,
         elevation: 0,
-        items: const [
-          TabItem(icon: Icons.star, title: 'Sticker'),
-          TabItem(icon: Icons.add, title: 'Add'),
-          TabItem(icon: Icons.live_help, title: 'Info'),
+        activeColor: const Color(0xff7f53ac),
+        items: [
+          const TabItem(icon: Icons.star, title: 'Sticker'),
+          TabItem(icon: Image.asset('assets/logo-white.png',),), //이미지가 정사각형이 아니라서 동그라미를 넘어가는 것 같아요 나중에 이미지 새로 만들고 다시 넣어보겟습니다
+          const TabItem(icon: Icons.live_help, title: 'Info'),
         ],
         initialActiveIndex: 1,//optional, default as 0
         onTap: (int index) {

@@ -79,16 +79,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
         gradient: const LinearGradient(
             colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Image.asset("assets/logo-white.png", width: 50,),
-              const SizedBox(width: 10),
-              Image.asset("assets/logo-text-white.png", width: 100)
-            ],
-          ),
-        ),
+        title: const Text(
+          '사진 검열',
+          style: TextStyle(
+              fontFamily: 'Staatliches-Regular'
+          ),),
         actions: [
           TextButton(
               onPressed: () {

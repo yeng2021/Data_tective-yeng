@@ -31,14 +31,11 @@ class _BlurState extends State<Blur> {
         gradient: const LinearGradient(
             colors: [Color(0xff647dee), Color(0xff7f53ac)]
         ),
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            '이미지 블러 처리',
-            style: TextStyle(
-                fontFamily: 'Staatliches-Regular'
-            ),),
-        ),
+        title: const Text(
+          '이미지 블러 처리',
+          style: TextStyle(
+              fontFamily: 'Staatliches-Regular'
+          ),),
         actions: [
           TextButton(onPressed: () {},  // TODO: onPressed 구현 필요.
               child: const Text(
