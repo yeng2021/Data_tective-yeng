@@ -50,80 +50,82 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
         MaterialPageRoute(builder: (context) => DetectionScreen(file, _stickerId)));
   }
 
+  Column columnForImageReady(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Flexible(child: Image.file(imageFile, fit: BoxFit.contain,)),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: OutlinedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return const Color(0xff7f53ac);
+                }
+                return const Color(0xff647dee);
+              }),),
+            onPressed: () {
+              send(context, imageFile);
+            },
+            child: const Text(
+              '이 이미지를 검열할래요',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'SCDream4'
+              ),),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: OutlinedButton(
+            onPressed: openImagePicker,
+            child: const Text(
+              '이미지를 다시 선택할래요',
+              style: TextStyle(
+                  fontFamily: 'SCDream4'
+              ),),
+          ),
+        )
+      ],
+    );
+  }
+
+  Column columnForNoImage(){
+    String _outLinedButtonText;
+    switch (sourceType) {
+      case ImageSource.camera:
+        _outLinedButtonText = '카메라 열기';
+        break;
+      default: // case ImageSource.gallery
+        _outLinedButtonText = '갤러리 열기';
+        break;
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.image_not_supported_outlined, size: 150),
+        const SizedBox(height: 50.0),
+        const Text('아직 아무 사진을 고르지 않으셨습니다',
+          style: TextStyle(
+              fontFamily: 'SCDream4', fontSize: 12, color: Colors.grey
+          ),),
+        const SizedBox(height: 20,),
+        OutlinedButton(
+          onPressed: openImagePicker,
+          child: Text(_outLinedButtonText,
+            style: const TextStyle(
+                fontFamily: 'SCDream4', fontSize: 14
+            ),),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Column _body;  // target image 가 있을때와 없을 때에 맞춰 body 생성.
-    if (imageFile != null) {
-      _body = Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Flexible(child: Image.file(imageFile, fit: BoxFit.contain,)),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: OutlinedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(MaterialState.disabled)) {
-                    return const Color(0xff7f53ac);
-                  }
-                  return const Color(0xff647dee);
-                }),),
-              onPressed: () {
-                send(context, imageFile);
-              },
-              child: const Text(
-                '이 이미지를 검열할래요',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'SCDream4'
-                ),),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: OutlinedButton(
-              onPressed: openImagePicker,
-              child: const Text(
-                '이미지를 다시 선택할래요',
-                style: TextStyle(
-                    fontFamily: 'SCDream4'
-                ),),
-            ),
-          )
-        ],
-      );
-    } else {  // if (imageFile == null)
-      String _outLinedButtonText;
-      switch (sourceType) {
-        case ImageSource.camera:
-          _outLinedButtonText = '카메라 열기';
-          break;
-        default: // case ImageSource.gallery
-          _outLinedButtonText = '갤러리 열기';
-          break;
-      }
-      _body = Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.image_not_supported_outlined, size: 150),
-          const SizedBox(height: 50.0),
-          const Text('아직 아무 사진을 고르지 않으셨습니다',
-            style: TextStyle(
-                fontFamily: 'SCDream4', fontSize: 12, color: Colors.grey
-            ),),
-          const SizedBox(height: 20,),
-          OutlinedButton(
-            onPressed: openImagePicker,
-            child: Text(_outLinedButtonText,
-              style: const TextStyle(
-                  fontFamily: 'SCDream4', fontSize: 14
-              ),),
-          )
-        ],
-      );
-    }
     return Scaffold(
       appBar: NewGradientAppBar(
         elevation: 0,
@@ -143,7 +145,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
         //       icon: const Icon(Icons.arrow_forward_ios))
         // ],
       ),
-      body: Center(child: _body),
+      body: Center(child: imageFile != null ? columnForImageReady() : columnForNoImage()),
     );
   }
 }
