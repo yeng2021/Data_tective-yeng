@@ -37,7 +37,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
   int selectedIndex = 0;
 
-  int _stickerId2 = 0;
+  int _stickerId2 = 1;
 
   @override
   void initState() {
