@@ -544,8 +544,8 @@ class StickerOption extends StatelessWidget {
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                      color: selected ?? false ? const Color(0xff647dee) : Colors.transparent,
-                      width: selected ?? false ? 10 : 0,
+                      color: selected ? Colors.transparent : const Color(0xff647dee),
+                      width: selected ? 0 : 10,
                     )
                 )
             ),
@@ -555,9 +555,7 @@ class StickerOption extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: selected ?? false
-                      ? const Color(0xff7f53ac)
-                      : Colors.black54,
+                  color: selected ? Colors.black54 : const Color(0xff7f53ac),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(

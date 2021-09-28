@@ -1,7 +1,8 @@
-import 'package:data_tective/detect/data_masking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart'
+    show ImageSource;
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'image_pick.dart';
@@ -23,7 +24,7 @@ class _HomeState extends State<Home> {
 
   SharedPreferences _prefs;
 
-  void sendToImagePick(BuildContext context, ImageSourceType sourceType, _stickerId) {
+  void sendToImagePick(BuildContext context, ImageSource sourceType, _stickerId) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => ImageFromGalleryEx(sourceType, _stickerId)));
   }
@@ -103,7 +104,7 @@ class _HomeState extends State<Home> {
               const SizedBox(height: 20),
               OutlinedButton(
                   onPressed: () {
-                    sendToImagePick(context, ImageSourceType.gallery, _stickerId);
+                    sendToImagePick(context, ImageSource.gallery, _stickerId);
                   },
                   child: const Text(
                     '갤러리 열기',
@@ -116,7 +117,7 @@ class _HomeState extends State<Home> {
               const SizedBox(height: 10.0),
               OutlinedButton(
                   onPressed: () {
-                    sendToImagePick(context, ImageSourceType.camera, _stickerId);
+                    sendToImagePick(context, ImageSource.camera, _stickerId);
                   },
                   child: const Text(
                       '카메라 열기',
@@ -254,8 +255,8 @@ class StickerOption extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: selected ?? false ? const Color(0xff647dee) : Colors.transparent,
-                  width: selected ?? false ? 10 : 0,
+                  color: selected ? Colors.transparent : const Color(0xff647dee),
+                  width: selected ? 0 : 10,
                 )
               )
             ),
@@ -265,9 +266,7 @@ class StickerOption extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: selected ?? false
-                      ? const Color(0xff7f53ac)
-                      : Colors.black54,
+                  color: selected ? Colors.black54 : const Color(0xff7f53ac),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
