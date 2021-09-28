@@ -7,21 +7,21 @@ import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 
 class Blur extends StatefulWidget {
   final List<Face> faces;
-  final File images;  // TODO: images 가 아니라 image 혹은 imageFile 로 해야하지 않을까?
-  final ui.Image imageSelected;
-  Blur(this.faces, this.images, this.imageSelected);
+  final File imageFile;
+  final ui.Image imageImage;
+  Blur(this.faces, this.imageFile, this.imageImage);
 
   @override
-  _BlurState createState() => _BlurState(faces, images, imageSelected);
+  _BlurState createState() => _BlurState(faces, imageFile, imageImage);
 }
 
 class _BlurState extends State<Blur> {
   List<Face> faces;
-  File images;
-  ui.Image imageSelected;
+  File imageFile;
+  ui.Image imageImage;
   double _sigma = 5;
 
-  _BlurState(this.faces, this.images, this.imageSelected);
+  _BlurState(this.faces, this.imageFile, this.imageImage);
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +54,9 @@ class _BlurState extends State<Blur> {
               child: Stack(
                 children: <Widget>[
                   SizedBox(
-                      height: imageSelected.height.toDouble(),
-                      width: imageSelected.width.toDouble(),
-                      child: Image.file(images)
+                      height: imageImage.height.toDouble(),
+                      width: imageImage.width.toDouble(),
+                      child: Image.file(imageFile)
                   ),
                   for(Face face in faces)
                   Positioned(

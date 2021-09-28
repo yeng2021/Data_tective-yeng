@@ -74,94 +74,74 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
         // ],
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-          child: Container(
-            child: imageFile != null
-            ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(child: Image.file(imageFile, fit: BoxFit.contain,)),
-                const SizedBox(height: 10),
-                OutlinedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return const Color(0xff7f53ac);
-                      }
-                      return const Color(0xff647dee);
-                    }),),
-                  onPressed: () {
-                    send(context, imageFile);
-                  },
-                  child: const Text(
-                      '이 이미지를 검열할래요',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'SCDream4'
-                    ),),
-                ),
-                OutlinedButton(
-                  onPressed: openImagePicker,
-                  child: const Text(
-                      '이미지를 다시 선택할래요',
-                    style: TextStyle(
-                      fontFamily: 'SCDream4'
-                    ),),
-                )
-              ],
-            )
-                :Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                    Icons.image_not_supported_outlined,
-                    size: 150),
-                const SizedBox(height: 50.0),
-                const Text(
-                  '아직 아무 사진을 고르지 않으셨습니다',
+        child: imageFile != null
+        ? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Flexible(child: Image.file(imageFile, fit: BoxFit.contain,)),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return const Color(0xff7f53ac);
+                    }
+                    return const Color(0xff647dee);
+                  }),),
+                onPressed: () {
+                  send(context, imageFile);
+                },
+                child: const Text(
+                    '이 이미지를 검열할래요',
                   style: TextStyle(
-                      fontFamily: 'SCDream4',
-                      fontSize: 12,
-                      color: Colors.grey
+                    color: Colors.white,
+                    fontFamily: 'SCDream4'
                   ),),
-                const SizedBox(height: 20,),
-                OutlinedButton(
-                  onPressed: openImagePicker,
-                  child: Text(
-                    sourceType.index == ImageSourceType.camera.index
-                      ?'카메라 열기'
-                    :'갤러리 열기',
-                    style: const TextStyle(
-                      fontFamily: 'SCDream4',
-                      fontSize: 14
-                    ),),
-                )
-              ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: OutlinedButton(
+                onPressed: openImagePicker,
+                child: const Text(
+                    '이미지를 다시 선택할래요',
+                  style: TextStyle(
+                    fontFamily: 'SCDream4'
+                  ),),
+              ),
             )
-            // width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height,
-            // child: SizedBox(
-            //   width: MediaQuery.of(context).size.width,
-            //   height: MediaQuery.of(context).size.height,
-            //   child: _image != null
-            //       ? Expanded(
-            //     child: Image.file(
-            //       _image,
-            //       width: 200.0,
-            //       height: 200.0,
-            //       fit: BoxFit.contain,
-            //     ),
-            //   )
-            //       : Icon(sourceType.index == ImageSourceType.camera.index
-            //       ? Icons.camera_alt
-            //       : Icons.image,
-            //     size: 150,
-            //     color: Colors.grey[800],
-            //   ),
-            // ),
-          ),
+          ],
+        )
+            :Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+                Icons.image_not_supported_outlined,
+                size: 150),
+            const SizedBox(height: 50.0),
+            const Text(
+              '아직 아무 사진을 고르지 않으셨습니다',
+              style: TextStyle(
+                  fontFamily: 'SCDream4',
+                  fontSize: 12,
+                  color: Colors.grey
+              ),),
+            const SizedBox(height: 20,),
+            OutlinedButton(
+              onPressed: openImagePicker,
+              child: Text(
+                sourceType.index == ImageSourceType.camera.index
+                  ?'카메라 열기'
+                :'갤러리 열기',
+                style: const TextStyle(
+                  fontFamily: 'SCDream4',
+                  fontSize: 14
+                ),),
+            )
+          ],
         ),
       ),
     );

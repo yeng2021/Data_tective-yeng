@@ -15,24 +15,22 @@ ImagePicker imagePicker = ImagePicker();
 
 class ImageCover extends StatefulWidget {
   final List<Face> faces;
-  final images;  // TODO: 안 쓰면 삭제 필요
-  final ui.Image imageSelected;
-  final _stickerId;  // TODO: type 정의 필요
-  ImageCover(this.faces, this.images, this.imageSelected, this._stickerId);
+  final ui.Image imageImage;
+  final int _stickerId;
+  const ImageCover(this.faces, this.imageImage, this._stickerId);
 
   @override
-  _ImageCoverState createState() => _ImageCoverState(faces, images, imageSelected, _stickerId);
+  _ImageCoverState createState() => _ImageCoverState(faces, imageImage, _stickerId);
 }
 
 class _ImageCoverState extends State<ImageCover> {
   List<Face> faces;
-  final images;
-  ui.Image imageSelected;
-  var _image;
+  ui.Image imageImage;
+  dynamic _image;
   ui.Image coverimage;
-  var _stickerId;
+  int _stickerId;
 
-  _ImageCoverState(this.faces, this.images, this.imageSelected, this._stickerId);
+  _ImageCoverState(this.faces, this.imageImage, this._stickerId);
 
 
 
@@ -103,11 +101,11 @@ class _ImageCoverState extends State<ImageCover> {
         child: FittedBox(
           fit: BoxFit.contain,
           child: SizedBox(
-            height: imageSelected.height.toDouble(),
-            width: imageSelected.width.toDouble(),
+            height: imageImage.height.toDouble(),
+            width: imageImage.width.toDouble(),
             child: CanvasTouchDetector(
               builder: (context) => CustomPaint(
-                painter: FaceDraw(context, faces, imageSelected, coverimage),
+                painter: StickerDraw(context, faces, imageImage, coverimage),
               ),
             ),
           ),
@@ -117,13 +115,13 @@ class _ImageCoverState extends State<ImageCover> {
   }
 }
 
-class FaceDraw extends CustomPainter {
+class StickerDraw extends CustomPainter {
   List<Face> faces;
   ui.Image image;
   final BuildContext context;
   ui.Image coverImage;
 
-  FaceDraw(this.context, this.faces, this.image, this.coverImage);
+  StickerDraw(this.context, this.faces, this.image, this.coverImage);
 
   @override
 

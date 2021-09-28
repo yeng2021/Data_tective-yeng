@@ -63,7 +63,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // 투명색
     ));
@@ -132,10 +131,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       TextButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const DataMasking())); //그냥 테스트 해보려고 넣은 페이지 입니다. 무시하셔도 됩니다!!
-        },   // TODO: onPressed 구현 필요.
+        onPressed: () {},   // TODO: onPressed 구현 필요.
         child: const Text('Working on it!!'),
       ),
     ];

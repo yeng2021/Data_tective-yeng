@@ -4,6 +4,7 @@ import 'dart:ui' as ui show Image;
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import 'package:touchable/touchable.dart';
 import 'blur.dart';
 import 'sticker_cover.dart';
@@ -29,10 +30,41 @@ class _DetectionScreenState extends State<DetectionScreen> {
   List<Face> faces = [];
   List<TextBlock> textBlocks = [];
 
+  double _sigma = 5;
+
+  bool blurVisibility = true;
+  bool stickerVisibility = false;
+
+  int selectedIndex = 0;
+
+  int _stickerId2 = 0;
+
   @override
   void initState() {
     super.initState();
     getImage();
+  }
+
+  void _blurShow() {
+    setState(() {
+      blurVisibility = true;
+    });
+  }
+  void _blurHide() {
+    setState(() {
+      blurVisibility = false;
+    });
+  }
+
+  void _stickerShow() {
+    setState(() {
+      stickerVisibility = true;
+    });
+  }
+  void _stickerHide() {
+    setState(() {
+      stickerVisibility = false;
+    });
   }
 
   void getImage() async {
@@ -64,11 +96,36 @@ class _DetectionScreenState extends State<DetectionScreen> {
     );
   }
 
-  void _sendCoverFace(context, var faces, var images, var imageSelected, var _stickerId) {
+  void _sendCoverFace(context, var faces, var imageSelected, var _stickerId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ImageCover(faces, images, imageSelected, _stickerId)),
+      MaterialPageRoute(builder: (context) => ImageCover(faces, imageSelected, _stickerId)),
     );
+  }
+
+  static const List<Map<String, dynamic>> stickers = <Map<String, dynamic>>[
+    <String, dynamic>{
+      'name': 'heart',
+      'img': 'assets/sticker2.png',
+    },
+    <String, dynamic>{
+      'name': 'heart',
+      'img': 'assets/sticker2.png',
+    },
+    <String, dynamic>{
+      'name': 'heart',
+      'img': 'assets/sticker2.png',
+    },
+    <String, dynamic>{
+      'name': 'heart',
+      'img': 'assets/sticker2.png',
+    },
+  ];
+
+  void checkOption(int index) {
+    setState(() {
+      _stickerId2 = index;
+    });
   }
 
   @override
@@ -84,46 +141,159 @@ class _DetectionScreenState extends State<DetectionScreen> {
           style: TextStyle(
               fontFamily: 'Staatliches-Regular'
           ),),
-        actions: [
-          TextButton(
-              onPressed: () {
-                _stickerId == 1
-                    ?_sendBlurFace(context, faces, imageFile, imageImage)
-                    :_sendCoverFace(context,faces,imageFile,imageImage, _stickerId);
-              },
-              child: const Text('완료', style: TextStyle(color: Colors.white),)),
-          TextButton(
-              onPressed: () {
-                for(TextBlock block in textBlocks) {
-                  for (TextLine line in block.lines) {
-                    print('text: ${line.text}');
-                  }
-                }
-              },
-              child: const Text('읽기', style: TextStyle(color: Colors.white),))
-        ],
+        // actions: [
+        //   TextButton(
+        //       onPressed: () {
+        //         _stickerId == 1
+        //             ?_sendBlurFace(context, faces, imageFile, imageImage)
+        //             :_sendCoverFace(context,faces,imageImage, _stickerId);
+        //       },
+        //       child: const Text('완료', style: TextStyle(color: Colors.white),)),
+        //   TextButton(
+        //       onPressed: () {
+        //         for(TextBlock block in textBlocks) {
+        //           for (TextLine line in block.lines) {
+        //             print('text: ${line.text}');
+        //           }
+        //         }
+        //       },
+        //       child: const Text('읽기', style: TextStyle(color: Colors.white),))
+        // ],
       ),
       body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: FittedBox(
-            fit: BoxFit.contain,
-             child: SizedBox(
-               height: imageImage != null
-                 ?imageImage.height.toDouble()
-               :300,
-               width: imageImage != null
-                 ?imageImage.width.toDouble()
-               :300,
-               // child: Image.file(image),
-               child: CanvasTouchDetector(
-                 builder: (context) => CustomPaint(
-                   painter: FaceDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Flexible(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Center(
+                  child: ToggleSwitch(
+                    minWidth: MediaQuery.of(context).size.width,
+                    cornerRadius: 20.0,
+                    activeBgColors: const [[Color(0xff647dee)], [Color(0xff647dee)]],
+                    activeFgColor: Colors.white,
+                    inactiveBgColor: Colors.transparent,
+                    inactiveFgColor: Colors.black,
+                    initialLabelIndex: selectedIndex,
+                    totalSwitches: 2,
+                    labels: const ['블러', '스티커'],
+                    radiusStyle: true,
+                    onToggle: (index) {
+                      setState(() {
+                        selectedIndex = index;
+                      });
+                      if (selectedIndex == 0) {
+                        _blurShow();
+                        _stickerHide();
+                      }
+                      else {
+                        _blurHide();
+                        _stickerShow();
+                      }
+                      selectedIndex = index;
+                      print(selectedIndex);
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 10,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                 child: Stack(
+                   children: [SizedBox(
+                     height: imageImage != null
+                       ?imageImage.height.toDouble()
+                     :300,
+                     width: imageImage != null
+                       ?imageImage.width.toDouble()
+                     :300,
+                     // child: Image.file(image),
+                     child: CanvasTouchDetector(
+                       builder: (context) => CustomPaint(
+                         painter: FaceDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
+                       ),
+                     ),
+                   ),
+                     for(Face face in faces)
+                       Visibility(
+                         visible: blurVisibility,
+                         child: Positioned(
+                           top: face.boundingBox.top,
+                           left: face.boundingBox.left,
+                           child: Center(
+                             child: ClipRect(
+                               child: BackdropFilter(
+                                 filter: ImageFilter.blur(
+                                   sigmaX: imageImage.width*_sigma*0.001,
+                                   sigmaY: imageImage.height*_sigma*0.001,
+                                 ),
+                                 child: Container(
+                                   // alignment: Alignment.center,
+                                   width: face.boundingBox.width,
+                                   height: face.boundingBox.height,
+                                   color: Colors.black.withOpacity(0),
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                       ),
+              ]
                  ),
-               ),
-             ),
-          ),
+              ),
+            ), //TODO: 스티커로 가리는 거 추가
+            Flexible(
+              flex: 3,
+              child: Visibility(
+                visible: blurVisibility,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Slider.adaptive(
+                        min: 0,
+                        max: 10,
+                        divisions: 10,
+                        value: _sigma,
+                        onChanged:(value) {
+                          setState(() {
+                            _sigma = value;
+                          });
+                        }),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 3,
+              child: Visibility(
+                visible: stickerVisibility,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 2,
+                      children: [
+                        for (int i = 0; i < stickers.length; i++)
+                          StickerOption(
+                            stickers[i]['name'] as String,
+                            img: stickers[i]['img'] as String,
+                            onTap: () => checkOption(i + 1),
+                            selected: i + 1 == _stickerId2,
+                          )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -342,5 +512,68 @@ class FaceDraw extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class StickerOption extends StatelessWidget {
+
+  const StickerOption(
+      this.title, {
+        Key key,
+        this.img,
+        this.onTap,
+        this.selected,
+      }) : super(key: key);
+
+  final String title;
+  final String img;
+  final VoidCallback onTap;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink.image(
+      fit: BoxFit.contain,
+      image: AssetImage(img),
+      child: InkWell(
+        onTap: onTap,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                      color: selected ?? false ? const Color(0xff647dee) : Colors.transparent,
+                      width: selected ?? false ? 10 : 0,
+                    )
+                )
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: selected ?? false
+                      ? const Color(0xff7f53ac)
+                      : Colors.black54,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  title ?? '',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Staatliches-Regular'
+                  ),
+                ),
+              )
+            ],),
+          ),
+        ),
+      ),
+    );
   }
 }
