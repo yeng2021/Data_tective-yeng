@@ -160,140 +160,204 @@ class _DetectionScreenState extends State<DetectionScreen> {
         //       child: const Text('읽기', style: TextStyle(color: Colors.white),))
         // ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Flexible(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: Center(
-                  child: ToggleSwitch(
-                    minWidth: MediaQuery.of(context).size.width,
-                    cornerRadius: 20.0,
-                    activeBgColors: const [[Color(0xff647dee)], [Color(0xff647dee)]],
-                    activeFgColor: Colors.white,
-                    inactiveBgColor: Colors.transparent,
-                    inactiveFgColor: Colors.black,
-                    initialLabelIndex: selectedIndex,
-                    totalSwitches: 2,
-                    labels: const ['블러', '스티커'],
-                    radiusStyle: true,
-                    onToggle: (index) {
-                      setState(() {
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Flexible(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: Center(
+                    child: ToggleSwitch(
+                      minWidth: MediaQuery.of(context).size.width,
+                      cornerRadius: 20.0,
+                      activeBgColors: const [[Color(0xff647dee)], [Color(0xff647dee)]],
+                      activeFgColor: Colors.white,
+                      inactiveBgColor: Colors.transparent,
+                      inactiveFgColor: Colors.black,
+                      initialLabelIndex: selectedIndex,
+                      totalSwitches: 2,
+                      labels: const ['블러', '스티커'],
+                      radiusStyle: true,
+                      onToggle: (index) {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                        if (selectedIndex == 0) {
+                          _blurShow();
+                          _stickerHide();
+                        }
+                        else {
+                          _blurHide();
+                          _stickerShow();
+                        }
                         selectedIndex = index;
-                      });
-                      if (selectedIndex == 0) {
-                        _blurShow();
-                        _stickerHide();
-                      }
-                      else {
-                        _blurHide();
-                        _stickerShow();
-                      }
-                      selectedIndex = index;
-                      print(selectedIndex);
-                    },
+                        print(selectedIndex);
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-            Flexible(
-              flex: 10,
-              child: FittedBox(
-                fit: BoxFit.contain,
-                 child: Stack(
-                   children: [SizedBox(
-                     height: imageImage != null
-                       ?imageImage.height.toDouble()
-                     :300,
-                     width: imageImage != null
-                       ?imageImage.width.toDouble()
-                     :300,
-                     // child: Image.file(image),
-                     child: CanvasTouchDetector(
-                       builder: (context) => CustomPaint(
-                         painter: FaceDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
+              Flexible(
+                flex: 10,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                   child: Stack(
+                     children: [SizedBox(
+                       height: imageImage != null
+                         ?imageImage.height.toDouble()
+                       :300,
+                       width: imageImage != null
+                         ?imageImage.width.toDouble()
+                       :300,
+                       // child: Image.file(image),
+                       child: CanvasTouchDetector(
+                         builder: (context) => CustomPaint(
+                           painter: FaceDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
+                         ),
                        ),
                      ),
-                   ),
-                     for(Face face in faces)
-                       Visibility(
-                         visible: blurVisibility,
-                         child: Positioned(
-                           top: face.boundingBox.top,
-                           left: face.boundingBox.left,
-                           child: Center(
-                             child: ClipRect(
-                               child: BackdropFilter(
-                                 filter: ImageFilter.blur(
-                                   sigmaX: imageImage.width*_sigma*0.001,
-                                   sigmaY: imageImage.height*_sigma*0.001,
-                                 ),
-                                 child: Container(
-                                   // alignment: Alignment.center,
-                                   width: face.boundingBox.width,
-                                   height: face.boundingBox.height,
-                                   color: Colors.black.withOpacity(0),
+                       for(Face face in faces)
+                         Visibility(
+                           visible: blurVisibility,
+                           child: Positioned(
+                             top: face.boundingBox.top,
+                             left: face.boundingBox.left,
+                             child: Center(
+                               child: ClipRect(
+                                 child: BackdropFilter(
+                                   filter: ImageFilter.blur(
+                                     sigmaX: imageImage.width*_sigma*0.001,
+                                     sigmaY: imageImage.height*_sigma*0.001,
+                                   ),
+                                   child: Container(
+                                     // alignment: Alignment.center,
+                                     width: face.boundingBox.width,
+                                     height: face.boundingBox.height,
+                                     color: Colors.black.withOpacity(0),
+                                   ),
                                  ),
                                ),
                              ),
                            ),
                          ),
-                       ),
-              ]
-                 ),
-              ),
-            ), //TODO: 스티커로 가리는 거 추가
-            Flexible(
-              flex: 3,
-              child: Visibility(
-                visible: blurVisibility,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Slider.adaptive(
-                        min: 0,
-                        max: 10,
-                        divisions: 10,
-                        value: _sigma,
-                        onChanged:(value) {
-                          setState(() {
-                            _sigma = value;
-                          });
-                        }),
-                  ),
+                       for(TextBlock textBlock in textBlocks)
+                         Visibility(
+                           visible: blurVisibility,
+                           child: Positioned(
+                             top: textBlock.rect.top,
+                             left: textBlock.rect.left,
+                             child: Center(
+                               child: ClipRect(
+                                 child: BackdropFilter(
+                                   filter: ImageFilter.blur(
+                                     sigmaX: imageImage.width*_sigma*0.001,
+                                     sigmaY: imageImage.height*_sigma*0.001,
+                                   ),
+                                   child: Container(
+                                     // alignment: Alignment.center,
+                                     width: textBlock.rect.width,
+                                     height: textBlock.rect.height,
+                                     color: Colors.black.withOpacity(0),
+                                   ),
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                ]
+                   ),
                 ),
-              ),
-            ),
-            Flexible(
-              flex: 3,
-              child: Visibility(
-                visible: stickerVisibility,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: GridView.count(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      crossAxisCount: 1,
-                      mainAxisSpacing: 2,
-                      children: [
-                        for (int i = 0; i < stickers.length; i++)
-                          StickerOption(
-                            stickers[i]['name'] as String,
-                            img: stickers[i]['img'] as String,
-                            onTap: () => checkOption(i + 1),
-                            selected: i + 1 == _stickerId2,
-                          )
-                      ],
+              ), //TODO: 스티커로 가리는 거 추가
+              // Flexible(
+              //   flex: 10,
+              //   child: FittedBox(
+              //     fit: BoxFit.contain,
+              //     child: Stack(
+              //         children: [SizedBox(
+              //           height: imageImage != null
+              //               ?imageImage.height.toDouble()
+              //               :300,
+              //           width: imageImage != null
+              //               ?imageImage.width.toDouble()
+              //               :300,
+              //           // child: Image.file(image),
+              //           child: CanvasTouchDetector(
+              //             builder: (context) => CustomPaint(
+              //               painter: FaceDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
+              //             ),
+              //           ),
+              //         ),
+              //         ]
+              //     ),
+              //   ),
+              // ),
+              Flexible(
+                flex: 3,
+                child: Visibility(
+                  visible: blurVisibility,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Slider.adaptive(
+                          min: 0,
+                          max: 10,
+                          divisions: 10,
+                          value: _sigma,
+                          onChanged:(value) {
+                            setState(() {
+                              _sigma = value;
+                            });
+                          }),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              Flexible(
+                flex: 3,
+                child: Visibility(
+                  visible: stickerVisibility,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        crossAxisCount: 1,
+                        mainAxisSpacing: 2,
+                        children: [
+                          for (int i = 0; i < stickers.length; i++)
+                            StickerOption(
+                              stickers[i]['name'] as String,
+                              img: stickers[i]['img'] as String,
+                              onTap: () => checkOption(i + 1),
+                              selected: i + 1 == _stickerId2,
+                            )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Flexible(
+              //   flex: 1,
+              //   child: Padding(
+              //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              //     child: OutlinedButton(
+              //       onPressed: () {},
+              //       child: const Text(
+              //         '적용',
+              //         style: TextStyle(
+              //             fontFamily: 'SCDream4'
+              //         ),),
+              //     ),
+              //   ),
+              // )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -385,19 +449,19 @@ class FaceDraw extends CustomPainter {
       );
 
       touchyCanvas.drawLine(
-        Offset(textBlock.rect.left + 5, textBlock.rect.top - 12),
-        Offset(textBlock.rect.left + 160, textBlock.rect.top - 12),
+        Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/18),
+        Offset(textBlock.rect.right, textBlock.rect.top - textBlock.rect.width/18),
         Paint()
           ..color = Colors.red.withOpacity(0.8)
-          ..strokeWidth = 18
+          ..strokeWidth = textBlock.rect.width/9.5
           ..style = PaintingStyle.fill,);
 
 
       TextPainter paintSpanId = TextPainter(
-        text: const TextSpan(
+        text: TextSpan(
           style: TextStyle(
             color: Colors.white,
-            fontSize: 15,
+            fontSize: textBlock.rect.width.toDouble()/10,
             fontWeight: FontWeight.w400,
           ),
           text: "자동차 번호판 노출 위험!",
@@ -407,7 +471,7 @@ class FaceDraw extends CustomPainter {
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, Offset(textBlock.rect.left + 10, textBlock.rect.top - 20));
+      paintSpanId.paint(canvas, Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/9));
 
     }
 
@@ -483,19 +547,19 @@ class FaceDraw extends CustomPainter {
       );
 
       touchyCanvas.drawLine(
-                Offset(face.boundingBox.left + 5, face.boundingBox.top - 12),
-                Offset(face.boundingBox.left + 120, face.boundingBox.top - 12),
+                Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
+                Offset(face.boundingBox.right, face.boundingBox.top - face.boundingBox.height/12),
                 Paint()
                   ..color = Colors.red.withOpacity(0.8)
-                  ..strokeWidth = 18
+                  ..strokeWidth = face.boundingBox.height/8
                   ..style = PaintingStyle.fill,);
 
 
       TextPainter paintSpanId = TextPainter(
-        text: const TextSpan(
+        text: TextSpan(
           style: TextStyle(
             color: Colors.white,
-            fontSize: 15,
+            fontSize: face.boundingBox.width/7.2,
             fontWeight: FontWeight.w400,
           ),
           text: "초상권 침해 위험!",
@@ -505,7 +569,7 @@ class FaceDraw extends CustomPainter {
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, Offset(face.boundingBox.left + 10, face.boundingBox.top - 20));
+      paintSpanId.paint(canvas, Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/6));
     }
   }
 
