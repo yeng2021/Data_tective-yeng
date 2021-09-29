@@ -13,11 +13,10 @@ import 'sticker_cover.dart';
 
 class DetectionScreen extends StatefulWidget {
   final File imageFile;
-  final int _stickerId;
-  const DetectionScreen(this.imageFile, this._stickerId);
+  const DetectionScreen(this.imageFile);
 
   @override
-  _DetectionScreenState createState() => _DetectionScreenState(imageFile, _stickerId);
+  _DetectionScreenState createState() => _DetectionScreenState(imageFile,);
 }
 
 class _DetectionScreenState extends State<DetectionScreen> {
@@ -25,8 +24,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
   // List<Face> faces;
 
   File imageFile;
-  final int _stickerId;
-  _DetectionScreenState(this.imageFile, this._stickerId);
+  _DetectionScreenState(this.imageFile);
 
   ui.Image imageImage;
   List<Face> faces = [];
@@ -40,7 +38,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
   int selectedIndex = 0;
 
-  int _stickerId2 = 1;
+  int _stickerId = 1;
 
   String num;
   String textStr;
@@ -98,6 +96,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
       imageImage = imageFile2;
       faces = outputFaces;
       textBlocks = outputBlocks;
+      textBlocks.forEach((element) {
+        textStr = element.text;
+        num = textStr.replaceAll(RegExp(r'[^0-9]'), '');
+        if (num.length < 6) {
+          toRemoveTextBlock.add(element);
+        }
+      });
+      textBlocks.removeWhere((element) => toRemoveTextBlock.contains(element));
     });
   }
 
@@ -154,7 +160,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
   void checkOption(int index) {
     setState(() {
-      _stickerId2 = index;
+      _stickerId = index;
     });
   }
 
@@ -169,11 +175,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
   void bringSticker() async {
     setState(() async {
-      _stickerImage = await getImageFileFromAssets('sticker'+_stickerId2.toString()+'.png');
+      _stickerImage = await getImageFileFromAssets('sticker'+_stickerId.toString()+'.png');
     });
   }
 
-  void getImage2() async {
+  void convertImageType() async {
     var imageFile = await _stickerImage.readAsBytes();
     ui.Image imageFile2 = await decodeImageFromList(imageFile);
 
@@ -307,7 +313,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 crossAxisCount: 1,
-                mainAxisSpacing: 2,
+                mainAxisSpacing: 5,
                 children: [
                   for (int i = 0; i < stickers.length; i++)
                     StickerOption(
@@ -315,10 +321,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       img: stickers[i]['img'] as String,
                       onTap: () async {
                         checkOption(i + 1);
-                        _stickerImage = await getImageFileFromAssets('sticker'+_stickerId2.toString()+'.png');
-                        print(_stickerId2);
+                        _stickerImage = await getImageFileFromAssets('sticker'+_stickerId.toString()+'.png');
+                        convertImageType();
+                        print(_stickerId);
                       },
-                      selected: i + 1 == _stickerId2,
+                      selected: i + 1 == _stickerId,
                     )
                 ],
               ),
@@ -361,102 +368,105 @@ class _DetectionScreenState extends State<DetectionScreen> {
           //     child: const Text('읽기', style: TextStyle(color: Colors.white),)),
           Visibility(
             visible: stickerVisibility,
-            child: TextButton(onPressed: getImage2,
+            child: TextButton(onPressed: convertImageType,
                 child: const Text('검열', style: TextStyle(color: Colors.white),)),
           )
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 3,
-            child: Center(
-              child: ToggleSwitch(
-                minWidth: MediaQuery.of(context).size.width,
-                cornerRadius: 20.0,
-                activeBgColors: const [[Color(0xff647dee)], [Color(0xff647dee)]],
-                activeFgColor: Colors.white,
-                inactiveBgColor: Colors.transparent,
-                inactiveFgColor: Colors.black,
-                initialLabelIndex: selectedIndex,
-                totalSwitches: 2,
-                labels: const ['블러', '스티커'],
-                radiusStyle: true,
-                onToggle: (index) {
-                  setState(() {
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 30, 0, 50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              flex: 3,
+              child: Center(
+                child: ToggleSwitch(
+                  minWidth: MediaQuery.of(context).size.width,
+                  cornerRadius: 20.0,
+                  activeBgColors: const [[Color(0xff647dee)], [Color(0xff647dee)]],
+                  activeFgColor: Colors.white,
+                  inactiveBgColor: Colors.transparent,
+                  inactiveFgColor: Colors.black,
+                  initialLabelIndex: selectedIndex,
+                  totalSwitches: 2,
+                  labels: const ['블러', '스티커'],
+                  radiusStyle: true,
+                  onToggle: (index) {
+                    bringSticker();
+                    convertImageType();
+                    setState(() {
+                      selectedIndex = index;
+                    });
+                    if (selectedIndex == 0) {
+                      _blurShow();
+                      _stickerHide();
+                    }
+                    else {
+                      _blurHide();
+                      _stickerShow();
+                    }
                     selectedIndex = index;
-                  });
-                  if (selectedIndex == 0) {
-                    _blurShow();
-                    _stickerHide();
-                  }
-                  else {
-                    _blurHide();
-                    _stickerShow();
-                  }
-                  selectedIndex = index;
-                  print(selectedIndex);
-                },
+                    print(selectedIndex);
+                  },
+                ),
               ),
             ),
-          ),
-          //TODO: 스티커로 가리는 거 추가
+            //TODO: 스티커로 가리는 거 추가
 
-          // Flexible(
-          //   flex: 10,
-          //   child: FittedBox(
-          //     fit: BoxFit.contain,
-          //     child: Stack(
-          //         children: [SizedBox(
-          //           height: imageImage != null
-          //               ?imageImage.height.toDouble()
-          //               :300,
-          //           width: imageImage != null
-          //               ?imageImage.width.toDouble()
-          //               :300,
-          //           // child: Image.file(image),
-          //           child: CanvasTouchDetector(
-          //             builder: (context) => CustomPaint(
-          //               painter: BlurDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
-          //             ),
-          //           ),
-          //         ),
-          //         ]
-          //     ),
-          //   ),
-          // ),
-          // Flexible(
-          //   flex: 5,
-          //   child: Padding(
-          //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          //     child: OutlinedButton(
-          //       style: ButtonStyle(
-          //         backgroundColor: apply ? MaterialStateProperty.resolveWith<Color>((states) {return const Color(0xffffffff);}) : MaterialStateProperty.resolveWith<Color>((states) {return const Color(0xff647dee);}),),
-          //       onPressed: () {
-          //         setState(() {
-          //           apply = !apply;
-          //         });
-          //       },
-          //       child: apply
-          //           ? const Padding(
-          //         padding: EdgeInsets.all(8.0),
-          //         child: Text('적용 해제', style: TextStyle(fontFamily: 'SCDream4', color: Color(0xff647dee), fontSize: 25)),)
-          //           : const Padding(
-          //         padding: EdgeInsets.all(8.0),
-          //         child: Text('적용', style: TextStyle(fontFamily: 'SCDream4', color: Colors.white, fontSize: 25)),
-          //       ),
-          //     ),
-          //   ),
-          // )
-          if (blurVisibility != true) Flexible(flex: 18, child: columnForSticker()) else Flexible(flex: 18, child: columnForBlur())
-        ],
+            // Flexible(
+            //   flex: 10,
+            //   child: FittedBox(
+            //     fit: BoxFit.contain,
+            //     child: Stack(
+            //         children: [SizedBox(
+            //           height: imageImage != null
+            //               ?imageImage.height.toDouble()
+            //               :300,
+            //           width: imageImage != null
+            //               ?imageImage.width.toDouble()
+            //               :300,
+            //           // child: Image.file(image),
+            //           child: CanvasTouchDetector(
+            //             builder: (context) => CustomPaint(
+            //               painter: BlurDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
+            //             ),
+            //           ),
+            //         ),
+            //         ]
+            //     ),
+            //   ),
+            // ),
+            // Flexible(
+            //   flex: 5,
+            //   child: Padding(
+            //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //     child: OutlinedButton(
+            //       style: ButtonStyle(
+            //         backgroundColor: apply ? MaterialStateProperty.resolveWith<Color>((states) {return const Color(0xffffffff);}) : MaterialStateProperty.resolveWith<Color>((states) {return const Color(0xff647dee);}),),
+            //       onPressed: () {
+            //         setState(() {
+            //           apply = !apply;
+            //         });
+            //       },
+            //       child: apply
+            //           ? const Padding(
+            //         padding: EdgeInsets.all(8.0),
+            //         child: Text('적용 해제', style: TextStyle(fontFamily: 'SCDream4', color: Color(0xff647dee), fontSize: 25)),)
+            //           : const Padding(
+            //         padding: EdgeInsets.all(8.0),
+            //         child: Text('적용', style: TextStyle(fontFamily: 'SCDream4', color: Colors.white, fontSize: 25)),
+            //       ),
+            //     ),
+            //   ),
+            // )
+            if (blurVisibility != true) Flexible(flex: 18, child: columnForSticker()) else Flexible(flex: 18, child: columnForBlur())
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _validateText();
-          textBlocks.removeWhere((element) => toRemoveTextBlock.contains(element));
-          // faces.clear();
+          //TODO: 사진 저장 및 공유
           },
         tooltip: 'Select',
         child: const Icon(Icons.image),
