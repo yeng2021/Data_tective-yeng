@@ -29,7 +29,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
   ui.Image imageImage;
   List<Face> faces = [];
   List<TextBlock> textBlocks = [];
-  List toRemove = [];
+  List toRemoveTextBlock = [];
 
   double _sigma = 5;
 
@@ -116,7 +116,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
       num = int.parse(numStr);
       p = num/100000;
       if (p <= 1) {
-        toRemove.add(element);
+        toRemoveTextBlock.add(element);
       }
     });
     // for (TextBlock textBlock in textBlocks)  {
@@ -393,7 +393,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _validateText();
-          textBlocks.removeWhere((element) => toRemove.contains(element));
+          textBlocks.removeWhere((element) => toRemoveTextBlock.contains(element));
           // faces.clear();
           },
         tooltip: 'Select',
