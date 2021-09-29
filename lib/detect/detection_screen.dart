@@ -542,8 +542,9 @@ class FaceDraw extends CustomPainter {
                           ],
                         ),
                         onPressed: () {
-                          faces.remove(face);
-                          Navigator.of(context).pop();
+                          showModalBottomSheet(context: context, builder: faceBottomSheet); //TODO: 팝업창 없애고 얼굴 눌렀을 때 BS 뜨게 하기
+                          // faces.remove(face);
+                          // Navigator.of(context).pop();
                         },)
                     ],
                   ),
@@ -670,4 +671,15 @@ class StickerOption extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget faceBottomSheet(BuildContext context) {
+  return Padding(
+    padding: EdgeInsets.all(24),
+    child: Column(
+      children: [
+        Text('초상권 침해') //TODO: BS 꾸미기, 검열 해제 버튼 넣기(TextButton)
+      ],
+    ),
+  );
 }
