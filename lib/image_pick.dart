@@ -47,7 +47,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
 
   void send(BuildContext context, File file) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => DetectionScreen(file, _stickerId)));
+        MaterialPageRoute(builder: (context) => DetectionScreen(file)));
   }
 
   Column columnForImageReady(){

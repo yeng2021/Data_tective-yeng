@@ -29,6 +29,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
   ui.Image imageImage;
   List<Face> faces = [];
   List<TextBlock> textBlocks = [];
+  List<TextLine> textLines = [];
   List toRemoveTextBlock = [];
 
   double _sigma = 5;
@@ -96,6 +97,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
       imageImage = imageFile2;
       faces = outputFaces;
       textBlocks = outputBlocks;
+      for(TextBlock block in textBlocks) {
+        for (TextLine line in block.lines) {
+          textLines.add(line);
+        }
+      }
       textBlocks.forEach((element) {
         textStr = element.text;
         num = textStr.replaceAll(RegExp(r'[^0-9]'), '');
@@ -219,10 +225,10 @@ class _DetectionScreenState extends State<DetectionScreen> {
                         ),
                       ),
                     ),
-                  for(TextBlock textBlock in textBlocks)
+                  for(TextLine textLine in textLines)
                     Positioned(
-                      top: textBlock.rect.top,
-                      left: textBlock.rect.left,
+                      top: textLine.rect.top,
+                      left: textLine.rect.left,
                       child: Center(
                         child: ClipRect(
                           child: BackdropFilter(
@@ -232,8 +238,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
                             ),
                             child: Container(
                               // alignment: Alignment.center,
-                              width: textBlock.rect.width,
-                              height: textBlock.rect.height,
+                              width: textLine.rect.width,
+                              height: textLine.rect.height,
                               color: Colors.black.withOpacity(0),
                             ),
                           ),
@@ -250,7 +256,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     // child: Image.file(image),
                     child: CanvasTouchDetector(
                       builder: (context) => CustomPaint(
-                        painter: BlurDraw(context, faces: faces, imageImage: imageImage, textBlocks: textBlocks),
+                        painter: BlurDraw(context, faces: faces, imageImage: imageImage, textLines : textLines),
                       ),
                     ),
                   ),
@@ -297,7 +303,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   :300,
               child: CanvasTouchDetector(
                 builder: (context) => CustomPaint(
-                  painter: StickerDraw(context, faces, textBlocks, imageImage, stickerImage),
+                  painter: StickerDraw(context, faces, textLines, imageImage, stickerImage),
                 ),
               ),
             ),
@@ -357,15 +363,16 @@ class _DetectionScreenState extends State<DetectionScreen> {
           //           :_sendCoverFace(context,faces,imageImage, _stickerId);
           //     },
           //     child: const Text('완료', style: TextStyle(color: Colors.white),)),
-          // TextButton(
-          //     onPressed: () {
-          //       for(TextBlock block in textBlocks) {
-          //         for (TextLine line in block.lines) {
-          //           print('text: ${line.text}');
-          //         }
-          //       }
-          //     },
-          //     child: const Text('읽기', style: TextStyle(color: Colors.white),)),
+          TextButton(
+              onPressed: () {
+                for(TextBlock block in textBlocks) {
+                  print('textBlock: ${block.text}');
+                  for (TextLine line in block.lines) {
+                    print('line: ${line.text}');
+                  }
+                }
+              },
+              child: const Text('읽기', style: TextStyle(color: Colors.white),)),
           Visibility(
             visible: stickerVisibility,
             child: TextButton(onPressed: convertImageType,
@@ -477,11 +484,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
 class BlurDraw extends CustomPainter {
   List<Face> faces;
-  List<TextBlock> textBlocks;
+  List<TextLine> textLines;
   ui.Image imageImage;
   final BuildContext context;
 
-  BlurDraw(this.context,{@required this.faces, @required this.imageImage, @required this.textBlocks});
+  BlurDraw(this.context,{@required this.faces, @required this.imageImage, @required this.textLines});
 
   @override
 
@@ -494,9 +501,9 @@ class BlurDraw extends CustomPainter {
     //     Paint()
     // );
 
-    for (TextBlock textBlock in textBlocks) {
+    for (TextLine textLine in textLines) {
 
-      touchyCanvas.drawRect(Rect.fromLTRB(textBlock.rect.left, textBlock.rect.top, textBlock.rect.right, textBlock.rect.bottom), Paint()
+      touchyCanvas.drawRect(Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom), Paint()
         ..color = Colors.transparent
           , onTapDown: (_) {
             showDialog(
@@ -534,7 +541,7 @@ class BlurDraw extends CustomPainter {
                         child: const Text('해제',
                             style: TextStyle(color: Colors.red)),
                         onPressed: () {
-                          textBlocks.remove(textBlock);
+                          textLines.remove(textLine);
                           Navigator.of(context).pop();
                         },)
                     ],
@@ -544,7 +551,7 @@ class BlurDraw extends CustomPainter {
           });
 
       touchyCanvas.drawRect(
-        Rect.fromLTRB(textBlock.rect.left, textBlock.rect.top, textBlock.rect.right, textBlock.rect.bottom),
+        Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom),
         // face.boundingBox,
         Paint()
           ..style = PaintingStyle.stroke
@@ -552,12 +559,34 @@ class BlurDraw extends CustomPainter {
           ..strokeWidth = 4,
       );
 
+      // touchyCanvas.drawLine(
+      //   Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/18),
+      //   Offset(textBlock.rect.right, textBlock.rect.top - textBlock.rect.width/18),
+      //   Paint()
+      //     ..color = Colors.red.withOpacity(0.8)
+      //     ..strokeWidth = textBlock.rect.width/9.5
+      //     ..style = PaintingStyle.fill,);
+      //
+      //
+      // TextPainter paintSpanId = TextPainter(
+      //   text: TextSpan(
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: textBlock.rect.width.toDouble()/10,
+      //       fontWeight: FontWeight.w400,
+      //     ),
+      //     text: "자동차 번호판 노출 위험!",
+      //   ),
+      //   textAlign: TextAlign.center,
+      //   textDirection: TextDirection.ltr,
+      // );
+
       touchyCanvas.drawLine(
-        Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/18),
-        Offset(textBlock.rect.right, textBlock.rect.top - textBlock.rect.width/18),
+        Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/18),
+        Offset(textLine.rect.left + textLine.rect.width/25, textLine.rect.top - textLine.rect.width/18),
         Paint()
           ..color = Colors.red.withOpacity(0.8)
-          ..strokeWidth = textBlock.rect.width/9.5
+          ..strokeWidth = textLine.rect.width/9.5
           ..style = PaintingStyle.fill,);
 
 
@@ -565,17 +594,17 @@ class BlurDraw extends CustomPainter {
         text: TextSpan(
           style: TextStyle(
             color: Colors.white,
-            fontSize: textBlock.rect.width.toDouble()/10,
+            fontSize: textLine.rect.width.toDouble()/10,
             fontWeight: FontWeight.w400,
           ),
-          text: "자동차 번호판 노출 위험!",
+          text: "!",
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/9));
+      paintSpanId.paint(canvas, Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/9));
 
     }
 
@@ -651,13 +680,38 @@ class BlurDraw extends CustomPainter {
           ..strokeWidth = 4,
       );
 
+      // touchyCanvas.drawLine(
+      //           Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
+      //           Offset(face.boundingBox.right, face.boundingBox.top - face.boundingBox.height/12),
+      //           Paint()
+      //             ..color = Colors.red.withOpacity(0.8)
+      //             ..strokeWidth = face.boundingBox.height/8
+      //             ..style = PaintingStyle.fill,);
+      //
+      //
+      // TextPainter paintSpanId = TextPainter(
+      //   text: TextSpan(
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: face.boundingBox.width/7.2,
+      //       fontWeight: FontWeight.w400,
+      //     ),
+      //     text: "초상권 침해 위험!",
+      //   ),
+      //   textAlign: TextAlign.center,
+      //   textDirection: TextDirection.ltr,
+      // );
+      //
+      // paintSpanId.layout();
+      // paintSpanId.paint(canvas, Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/6));
+
       touchyCanvas.drawLine(
-                Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
-                Offset(face.boundingBox.right, face.boundingBox.top - face.boundingBox.height/12),
-                Paint()
-                  ..color = Colors.red.withOpacity(0.8)
-                  ..strokeWidth = face.boundingBox.height/8
-                  ..style = PaintingStyle.fill,);
+        Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
+        Offset(face.boundingBox.left + face.boundingBox.height/20, face.boundingBox.top - face.boundingBox.height/12),
+        Paint()
+          ..color = Colors.red.withOpacity(0.8)
+          ..strokeWidth = face.boundingBox.height/8
+          ..style = PaintingStyle.fill,);
 
 
       TextPainter paintSpanId = TextPainter(
@@ -667,7 +721,7 @@ class BlurDraw extends CustomPainter {
             fontSize: face.boundingBox.width/7.2,
             fontWeight: FontWeight.w400,
           ),
-          text: "초상권 침해 위험!",
+          text: "!",
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
@@ -684,75 +738,14 @@ class BlurDraw extends CustomPainter {
   }
 }
 
-class StickerOption extends StatelessWidget {
-
-  const StickerOption(
-      this.title, {
-        Key key,
-        this.img,
-        this.onTap,
-        this.selected,
-      }) : super(key: key);
-
-  final String title;
-  final String img;
-  final VoidCallback onTap;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Ink.image(
-      fit: BoxFit.contain,
-      image: AssetImage(img),
-      child: InkWell(
-        onTap: onTap,
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                      color: selected ?? false ? const Color(0xff647dee) : Colors.transparent,
-                      width: selected ?? false ? 10 : 0,
-                    )
-                )
-            ),
-            padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: selected ?? false ? const Color(0xff7f53ac) : Colors.black54,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  title ?? '',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontFamily: 'Staatliches-Regular'
-                  ),
-                ),
-              )
-            ],),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class StickerDraw extends CustomPainter {
   List<Face> faces;
-  List<TextBlock> textBlocks;
+  List<TextLine> textLines;
   ui.Image image;
   final BuildContext context;
   ui.Image coverImage;
 
-  StickerDraw(this.context, this.faces, this.textBlocks, this.image, this.coverImage);
+  StickerDraw(this.context, this.faces, this.textLines, this.image, this.coverImage);
 
   @override
 
@@ -835,9 +828,34 @@ class StickerDraw extends CustomPainter {
           ..strokeWidth = 4,
       );
 
+      // touchyCanvas.drawLine(
+      //   Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
+      //   Offset(face.boundingBox.right, face.boundingBox.top - face.boundingBox.height/12),
+      //   Paint()
+      //     ..color = Colors.red.withOpacity(0.8)
+      //     ..strokeWidth = face.boundingBox.height/8
+      //     ..style = PaintingStyle.fill,);
+      //
+      //
+      // TextPainter paintSpanId = TextPainter(
+      //   text: TextSpan(
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: face.boundingBox.width/7.2,
+      //       fontWeight: FontWeight.w400,
+      //     ),
+      //     text: "초상권 침해 위험!",
+      //   ),
+      //   textAlign: TextAlign.center,
+      //   textDirection: TextDirection.ltr,
+      // );
+      //
+      // paintSpanId.layout();
+      // paintSpanId.paint(canvas, Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/6));
+
       touchyCanvas.drawLine(
         Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
-        Offset(face.boundingBox.right, face.boundingBox.top - face.boundingBox.height/12),
+        Offset(face.boundingBox.left + face.boundingBox.height/20, face.boundingBox.top - face.boundingBox.height/12),
         Paint()
           ..color = Colors.red.withOpacity(0.8)
           ..strokeWidth = face.boundingBox.height/8
@@ -851,7 +869,7 @@ class StickerDraw extends CustomPainter {
             fontSize: face.boundingBox.width/7.2,
             fontWeight: FontWeight.w400,
           ),
-          text: "초상권 침해 위험!",
+          text: "!",
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
@@ -862,15 +880,15 @@ class StickerDraw extends CustomPainter {
 
     }
 
-    for (TextBlock textBlock in textBlocks) {
+    for (TextLine textLine in textLines) {
 
       canvas.drawImageRect(
           coverImage,
           Offset.zero & Size(coverImage.width.toDouble(), coverImage.height.toDouble()),
-          Offset(textBlock.rect.left, textBlock.rect.top) & Size(textBlock.rect.width, textBlock.rect.height),
+          Offset(textLine.rect.left, textLine.rect.top) & Size(textLine.rect.width, textLine.rect.height),
           Paint());
 
-      touchyCanvas.drawRect(Rect.fromLTRB(textBlock.rect.left, textBlock.rect.top, textBlock.rect.right, textBlock.rect.bottom), Paint()
+      touchyCanvas.drawRect(Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom), Paint()
         ..color = Colors.transparent
           , onTapDown: (_) {
             showDialog(
@@ -908,7 +926,7 @@ class StickerDraw extends CustomPainter {
                         child: const Text('해제',
                             style: TextStyle(color: Colors.red)),
                         onPressed: () {
-                          textBlocks.remove(textBlock);
+                          textLines.remove(textLine);
                           Navigator.of(context).pop();
                         },)
                     ],
@@ -918,7 +936,7 @@ class StickerDraw extends CustomPainter {
           });
 
       touchyCanvas.drawRect(
-        Rect.fromLTRB(textBlock.rect.left, textBlock.rect.top, textBlock.rect.right, textBlock.rect.bottom),
+        Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom),
         // face.boundingBox,
         Paint()
           ..style = PaintingStyle.stroke
@@ -926,12 +944,37 @@ class StickerDraw extends CustomPainter {
           ..strokeWidth = 4,
       );
 
+      // touchyCanvas.drawLine(
+      //   Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/18),
+      //   Offset(textBlock.rect.right, textBlock.rect.top - textBlock.rect.width/18),
+      //   Paint()
+      //     ..color = Colors.red.withOpacity(0.8)
+      //     ..strokeWidth = textBlock.rect.width/9.5
+      //     ..style = PaintingStyle.fill,);
+      //
+      //
+      // TextPainter paintSpanId = TextPainter(
+      //   text: TextSpan(
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: textBlock.rect.width.toDouble()/10,
+      //       fontWeight: FontWeight.w400,
+      //     ),
+      //     text: "자동차 번호판 노출 위험!",
+      //   ),
+      //   textAlign: TextAlign.center,
+      //   textDirection: TextDirection.ltr,
+      // );
+      //
+      // paintSpanId.layout();
+      // paintSpanId.paint(canvas, Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/9));
+
       touchyCanvas.drawLine(
-        Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/18),
-        Offset(textBlock.rect.right, textBlock.rect.top - textBlock.rect.width/18),
+        Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/18),
+        Offset(textLine.rect.left + textLine.rect.width/25, textLine.rect.top - textLine.rect.width/18),
         Paint()
           ..color = Colors.red.withOpacity(0.8)
-          ..strokeWidth = textBlock.rect.width/9.5
+          ..strokeWidth = textLine.rect.width/9.5
           ..style = PaintingStyle.fill,);
 
 
@@ -939,17 +982,17 @@ class StickerDraw extends CustomPainter {
         text: TextSpan(
           style: TextStyle(
             color: Colors.white,
-            fontSize: textBlock.rect.width.toDouble()/10,
+            fontSize: textLine.rect.width.toDouble()/10,
             fontWeight: FontWeight.w400,
           ),
-          text: "자동차 번호판 노출 위험!",
+          text: "!",
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/9));
+      paintSpanId.paint(canvas, Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/9));
 
     }
   }
@@ -957,6 +1000,67 @@ class StickerDraw extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class StickerOption extends StatelessWidget {
+
+  const StickerOption(
+      this.title, {
+        Key key,
+        this.img,
+        this.onTap,
+        this.selected,
+      }) : super(key: key);
+
+  final String title;
+  final String img;
+  final VoidCallback onTap;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink.image(
+      fit: BoxFit.contain,
+      image: AssetImage(img),
+      child: InkWell(
+        onTap: onTap,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                      color: selected ?? false ? const Color(0xff647dee) : Colors.transparent,
+                      width: selected ?? false ? 10 : 0,
+                    )
+                )
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: selected ?? false ? const Color(0xff7f53ac) : Colors.black54,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  title ?? '',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontFamily: 'Staatliches-Regular'
+                  ),
+                ),
+              )
+            ],),
+          ),
+        ),
+      ),
+    );
   }
 }
 
