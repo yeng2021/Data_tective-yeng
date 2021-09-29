@@ -29,6 +29,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
   ui.Image imageImage;
   List<Face> faces = [];
   List<TextBlock> textBlocks = [];
+  List toRemove = [];
 
   double _sigma = 5;
 
@@ -38,6 +39,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
   int selectedIndex = 0;
 
   int _stickerId2 = 1;
+
+  int num;
+  String numStr;
+  String textStr;
+  double p;
 
   @override
   void initState() {
@@ -101,6 +107,30 @@ class _DetectionScreenState extends State<DetectionScreen> {
       context,
       MaterialPageRoute(builder: (context) => ImageCover(faces, imageSelected, _stickerId)),
     );
+  }
+
+  void _validateText() {
+    textBlocks.forEach((element) {
+      textStr = element.text;
+      numStr = textStr.replaceAll(RegExp(r'[^0-9]'), '');
+      num = int.parse(numStr);
+      p = num/100000;
+      if (p <= 1) {
+        toRemove.add(element);
+      }
+    });
+    // for (TextBlock textBlock in textBlocks)  {
+    //   textStr = textBlock.text;
+    //   numStr = textStr.replaceAll(RegExp(r'[^0-9]'), '');
+    //   num = int.parse(numStr);
+    //   p = num/10000;
+    //   print('recognized: $textStr');
+    //   print('changed: $numStr');
+    //   print('judged: $p');
+    //   if (p <= 1) {
+    //     textBlocks.remove(textBlock);
+    //   }
+    // }
   }
 
   static const List<Map<String, dynamic>> stickers = <Map<String, dynamic>>[
@@ -362,7 +392,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          faces.clear();
+          _validateText();
+          textBlocks.removeWhere((element) => toRemove.contains(element));
+          // faces.clear();
           },
         tooltip: 'Select',
         child: const Icon(Icons.image),
