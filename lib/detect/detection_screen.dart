@@ -550,14 +550,14 @@ class BlurDraw extends CustomPainter {
             );
           });
 
-      touchyCanvas.drawRect(
-        Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom),
-        // face.boundingBox,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = Colors.greenAccent
-          ..strokeWidth = 4,
-      );
+      // touchyCanvas.drawRect(
+      //   Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom),
+      //   // face.boundingBox,
+      //   Paint()
+      //     ..style = PaintingStyle.stroke
+      //     ..color = Colors.greenAccent
+      //     ..strokeWidth = 4,
+      // );
 
       // touchyCanvas.drawLine(
       //   Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/18),
@@ -581,20 +581,44 @@ class BlurDraw extends CustomPainter {
       //   textDirection: TextDirection.ltr,
       // );
 
-      touchyCanvas.drawLine(
-        Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/18),
-        Offset(textLine.rect.left + textLine.rect.width/25, textLine.rect.top - textLine.rect.width/18),
+      // touchyCanvas.drawLine(
+      //   Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/18),
+      //   Offset(textLine.rect.left + textLine.rect.width/25, textLine.rect.top - textLine.rect.width/18),
+      //   Paint()
+      //     ..color = Colors.red.withOpacity(0.8)
+      //     ..strokeWidth = textLine.rect.width/9.5
+      //     ..style = PaintingStyle.fill,);
+
+      // TextPainter paintSpanId = TextPainter(
+      //   text: TextSpan(
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: textLine.rect.width.toDouble()/10,
+      //       fontWeight: FontWeight.w400,
+      //     ),
+      //     text: "!",
+      //   ),
+      //   textAlign: TextAlign.center,
+      //   textDirection: TextDirection.ltr,
+      // );
+      //
+      // paintSpanId.layout();
+      // paintSpanId.paint(canvas, Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/9));
+
+      touchyCanvas.drawCircle(
+          Offset(textLine.rect.left, textLine.rect.top),
+        textLine.rect.width/15,
         Paint()
-          ..color = Colors.red.withOpacity(0.8)
-          ..strokeWidth = textLine.rect.width/9.5
-          ..style = PaintingStyle.fill,);
+            ..color = Colors.red.withOpacity(0.8)
+            ..strokeWidth = textLine.rect.width/10
+            ..style = PaintingStyle.fill,);
 
 
       TextPainter paintSpanId = TextPainter(
         text: TextSpan(
           style: TextStyle(
             color: Colors.white,
-            fontSize: textLine.rect.width.toDouble()/10,
+            fontSize: textLine.rect.width.toDouble()/9,
             fontWeight: FontWeight.w400,
           ),
           text: "!",
@@ -604,7 +628,7 @@ class BlurDraw extends CustomPainter {
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/9));
+      paintSpanId.paint(canvas, Offset(textLine.rect.left - textLine.rect.width/60, textLine.rect.top - textLine.rect.width/16));
 
     }
 
@@ -670,15 +694,15 @@ class BlurDraw extends CustomPainter {
         );
       });
 
-      touchyCanvas.drawRect(
-          Rect.fromLTWH(face.boundingBox.left, face.boundingBox.top, face.boundingBox.width, face.boundingBox.height),
-        // face.boundingBox,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = Colors.greenAccent
-          // ..imageFilter = ImageFilter.blur(sigmaX: 10, sigmaY: 10)
-          ..strokeWidth = 4,
-      );
+      // touchyCanvas.drawRect(
+      //     Rect.fromLTWH(face.boundingBox.left, face.boundingBox.top, face.boundingBox.width, face.boundingBox.height),
+      //   // face.boundingBox,
+      //   Paint()
+      //     ..style = PaintingStyle.stroke
+      //     ..color = Colors.greenAccent
+      //     // ..imageFilter = ImageFilter.blur(sigmaX: 10, sigmaY: 10)
+      //     ..strokeWidth = 4,
+      // );
 
       // touchyCanvas.drawLine(
       //           Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
@@ -705,12 +729,37 @@ class BlurDraw extends CustomPainter {
       // paintSpanId.layout();
       // paintSpanId.paint(canvas, Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/6));
 
-      touchyCanvas.drawLine(
-        Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
-        Offset(face.boundingBox.left + face.boundingBox.height/20, face.boundingBox.top - face.boundingBox.height/12),
+      // touchyCanvas.drawLine(
+      //   Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/12),
+      //   Offset(face.boundingBox.left + face.boundingBox.height/20, face.boundingBox.top - face.boundingBox.height/12),
+      //   Paint()
+      //     ..color = Colors.red.withOpacity(0.8)
+      //     ..strokeWidth = face.boundingBox.height/8
+      //     ..style = PaintingStyle.fill,);
+      //
+      //
+      // TextPainter paintSpanId = TextPainter(
+      //   text: TextSpan(
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: face.boundingBox.width/7.2,
+      //       fontWeight: FontWeight.w400,
+      //     ),
+      //     text: "!",
+      //   ),
+      //   textAlign: TextAlign.center,
+      //   textDirection: TextDirection.ltr,
+      // );
+      //
+      // paintSpanId.layout();
+      // paintSpanId.paint(canvas, Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/6));
+
+      touchyCanvas.drawCircle(
+        Offset(face.boundingBox.left, face.boundingBox.top),
+        face.boundingBox.width/15,
         Paint()
           ..color = Colors.red.withOpacity(0.8)
-          ..strokeWidth = face.boundingBox.height/8
+          ..strokeWidth = face.boundingBox.width/10
           ..style = PaintingStyle.fill,);
 
 
@@ -718,7 +767,7 @@ class BlurDraw extends CustomPainter {
         text: TextSpan(
           style: TextStyle(
             color: Colors.white,
-            fontSize: face.boundingBox.width/7.2,
+            fontSize: face.boundingBox.width.toDouble()/9,
             fontWeight: FontWeight.w400,
           ),
           text: "!",
@@ -728,7 +777,7 @@ class BlurDraw extends CustomPainter {
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, Offset(face.boundingBox.left, face.boundingBox.top - face.boundingBox.height/6));
+      paintSpanId.paint(canvas, Offset(face.boundingBox.left - face.boundingBox.width/60, face.boundingBox.top - face.boundingBox.width/16));
     }
   }
 
@@ -935,14 +984,14 @@ class StickerDraw extends CustomPainter {
             );
           });
 
-      touchyCanvas.drawRect(
-        Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom),
-        // face.boundingBox,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = Colors.greenAccent
-          ..strokeWidth = 4,
-      );
+      // touchyCanvas.drawRect(
+      //   Rect.fromLTRB(textLine.rect.left, textLine.rect.top, textLine.rect.right, textLine.rect.bottom),
+      //   // face.boundingBox,
+      //   Paint()
+      //     ..style = PaintingStyle.stroke
+      //     ..color = Colors.greenAccent
+      //     ..strokeWidth = 4,
+      // );
 
       // touchyCanvas.drawLine(
       //   Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/18),
@@ -969,12 +1018,37 @@ class StickerDraw extends CustomPainter {
       // paintSpanId.layout();
       // paintSpanId.paint(canvas, Offset(textBlock.rect.left, textBlock.rect.top - textBlock.rect.width/9));
 
-      touchyCanvas.drawLine(
-        Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/18),
-        Offset(textLine.rect.left + textLine.rect.width/25, textLine.rect.top - textLine.rect.width/18),
+      // touchyCanvas.drawLine(
+      //   Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/18),
+      //   Offset(textLine.rect.left + textLine.rect.width/25, textLine.rect.top - textLine.rect.width/18),
+      //   Paint()
+      //     ..color = Colors.red.withOpacity(0.8)
+      //     ..strokeWidth = textLine.rect.width/9.5
+      //     ..style = PaintingStyle.fill,);
+      //
+      //
+      // TextPainter paintSpanId = TextPainter(
+      //   text: TextSpan(
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: textLine.rect.width.toDouble()/10,
+      //       fontWeight: FontWeight.w400,
+      //     ),
+      //     text: "!",
+      //   ),
+      //   textAlign: TextAlign.center,
+      //   textDirection: TextDirection.ltr,
+      // );
+      //
+      // paintSpanId.layout();
+      // paintSpanId.paint(canvas, Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/9));
+
+      touchyCanvas.drawCircle(
+        Offset(textLine.rect.left, textLine.rect.top),
+        textLine.rect.width/15,
         Paint()
           ..color = Colors.red.withOpacity(0.8)
-          ..strokeWidth = textLine.rect.width/9.5
+          ..strokeWidth = textLine.rect.width/10
           ..style = PaintingStyle.fill,);
 
 
@@ -982,7 +1056,7 @@ class StickerDraw extends CustomPainter {
         text: TextSpan(
           style: TextStyle(
             color: Colors.white,
-            fontSize: textLine.rect.width.toDouble()/10,
+            fontSize: textLine.rect.width.toDouble()/9,
             fontWeight: FontWeight.w400,
           ),
           text: "!",
@@ -992,7 +1066,7 @@ class StickerDraw extends CustomPainter {
       );
 
       paintSpanId.layout();
-      paintSpanId.paint(canvas, Offset(textLine.rect.left, textLine.rect.top - textLine.rect.width/9));
+      paintSpanId.paint(canvas, Offset(textLine.rect.left - textLine.rect.width/60, textLine.rect.top - textLine.rect.width/16));
 
     }
   }
