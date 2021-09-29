@@ -62,9 +62,9 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
           child: OutlinedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                if (states.contains(MaterialState.disabled)) {
-                  return const Color(0xff7f53ac);
-                }
+                // if (states.contains(MaterialState.disabled)) {
+                //   return const Color(0xff7f53ac);
+                // }
                 return const Color(0xff647dee);
               }),),
             onPressed: () {

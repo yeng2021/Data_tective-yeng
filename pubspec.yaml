@@ -37,6 +37,7 @@ dependencies:
   new_gradient_app_bar: ^0.2.0
   path_provider: ^2.0.5
   toggle_switch: ^1.2.0
+  screenshot: ^1.2.3
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -77,6 +78,7 @@ flutter:
     - assets/shinobu.png
     - assets/sticker1.png
     - assets/sticker2.png
+    - assets/sticker3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

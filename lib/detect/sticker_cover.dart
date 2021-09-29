@@ -53,7 +53,7 @@ class _ImageCoverState extends State<ImageCover> {
     _image = await getImageFileFromAssets('sticker'+_stickerId.toString()+'.png');
   }
 
-  void getImage() async {
+  void getImage2() async {
     var imageFile = await _image.readAsBytes();
     ui.Image imageFile2 = await decodeImageFromList(imageFile);
 
@@ -62,7 +62,7 @@ class _ImageCoverState extends State<ImageCover> {
     });
   }
 
-  void getImage2() async {
+  void getImage() async {
     var imageFile = await _image.readAsBytes();
     ui.Image imageFile2 = await decodeImageFromList(imageFile);
 
@@ -91,7 +91,7 @@ class _ImageCoverState extends State<ImageCover> {
           ),
         ),
         actions: [
-          TextButton(onPressed: getImage,
+          TextButton(onPressed: getImage2,
               child: const Text('검열', style: TextStyle(color: Colors.white),))
         ],
       ),
